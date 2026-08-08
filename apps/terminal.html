@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>终端</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+    background: #1e1f24;   /* 不透明深色，盖住窗口半透明白底 */
+    font-family: "SF Mono", "Menlo", "Consolas", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #d6d6dc;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 终端输出区 */
+.terminal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    cursor: text;
+    user-select: text;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+.terminal-body::-webkit-scrollbar { width: 8px; }
+.terminal-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.18); border-radius: 4px; }
+.terminal-body::-webkit-scrollbar-track { background: transparent; }
+
+.line { white-space: pre-wrap; word-break: break-all; min-height: 1.6em; }
+
+/* 输入行：真实 input，透明无边框 */
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    min-height: 1.6em;
+}
+.prompt-prefix { color: #7ee0a3; font-weight: 600; white-space: nowrap; }
+.prompt-path { color: #6ab0f3; font-weight: 600; white-space: nowrap; }
+.prompt-sep { color: #d6d6dc; white-space: nowrap; }
+.cmd-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0;
+    margin: 0;
+    font: inherit;
+    color: #f2f2f4;
+    caret-color: #f2f2f4;
+    min-width: 40px;
+    height: 1.6em;
+    line-height: 1.6em;
+    user-select: text;
+}
+.cmd-input::placeholder { color: rgba(255,255,255,0.25); }
+/* 已提交的命令（输入行定格） */
+.cmd-static { color: #f2f2f4; }
+
+/* 输出 */
+.out { color: #d6d6dc; }
+.out-ok { color: #7ee0a3; }
+.out-err { color: #f07178; }
+.out-info { color: #6ab0f3; }
+.out-dim { color: #8a8a93; }
+</style>
+<style>
+body { cursor: url('../webp/cursor-normal.png') 4 4, default; }
+input, textarea, [contenteditable="true"] { cursor: text; }
+</style>
+</head>
+<body>
+<div class="terminal-body" id="termBody"></div>
+
+<script>
+(function() {
+    const body = document.getElementById('termBody');
+    const USER = 'guest';
+    const HOST = 'macos-web';
+    const WALL_KEY = 'macos_wallpaper';
+    const WALL_FALLBACK = 'linear-gradient(135deg, #4b2c6f 0%, #7b3f8f 38%, #c96f8f 72%, #f0a06a 100%)';
+    let history = [];
+    let histIdx = -1;
+    let promptRow = null;
+    let inputEl = null;
+    let reqSeq = 0;
+    const pending = new Map();
+
+    // ========== 输出 ==========
+    function print(text, cls) {
+        const div = document.createElement('div');
+        div.className = 'line' + (cls ? ' ' + cls : '');
+        div.textContent = text;
+        body.appendChild(div);
+        scrollBottom();
+    }
+    function scrollBottom() { body.scrollTop = body.scrollHeight; }
+    function ensureFocus() { if (inputEl && document.activeElement !== inputEl) inputEl.focus(); }
+
+    // ========== 与父窗口通信 ==========
+    function call(command, payload) {
+        return new Promise((resolve) => {
+            const reqId = ++reqSeq;
+            pending.set(reqId, resolve);
+            const timeout = setTimeout(() => {
+                if (pending.has(reqId)) { pending.delete(reqId); resolve({ ok: false, data: '父窗口无响应（超时）' }); }
+            }, 3000);
+            pending.set('__t_' + reqId, timeout);
+            window.parent.postMessage({ type: 'terminal', command, payload, reqId }, '*');
+        });
+    }
+    window.addEventListener('message', (e) => {
+        const d = e.data;
+        if (!d || d.type !== 'terminalResult' || !d.reqId) return;
+        if (pending.has('__t_' + d.reqId)) { clearTimeout(pending.get('__t_' + d.reqId)); pending.delete('__t_' + d.reqId); }
+        const res = pending.get(d.reqId);
+        if (res) { pending.delete(d.reqId); res({ ok: d.ok, data: d.data }); }
+    });
+
+    // ========== 命令 ==========
+    const commands = {
+        help() {
+            return [
+                '可用命令：',
+                '  help               显示本帮助',
+                '  clear / cls        清空屏幕',
+                '  whoami             显示当前用户',
+                '  date               显示当前时间',
+                '  echo <text>        输出文本',
+                '  open <app>         打开应用（ls 查看）',
+                '  ls                 列出已安装应用',
+                '  dark on|off        切换深色/浅色模式',
+                '  theme <name>       切换壁纸（theme list）',
+                '  theme list         列出可用壁纸',
+                '  theme reset        恢复默认渐变',
+                '  notify <text>      发送通知',
+                '  about              系统信息',
+                '  exit               关闭终端',
+                '  pwd                当前路径',
+                '  history            命令历史'
+            ].join('\n');
+        },
+        whoami() { return USER; },
+        date() { return new Date().toLocaleString('zh-CN'); },
+        pwd() { return '/Users/' + USER; },
+        echo(args) { return args || ''; },
+        clear() { body.innerHTML = ''; return null; },
+        cls() { body.innerHTML = ''; return null; },
+        history() { return history.map((h, i) => `  ${i + 1}  ${h}`).join('\n'); },
+        ls: () => call('listApps'),
+        about: () => call('about'),
+        open(args) {
+            if (!args) return '用法: open <应用名>（先 ls 查看）';
+            // appConfig 的 key 全为小写，转小写避免 open Safari 失败
+            return call('openApp', args.trim().toLowerCase());
+        },
+        dark(args) {
+            const v = args.trim();
+            if (v === 'on') return call('setDarkMode', true);
+            if (v === 'off') return call('setDarkMode', false);
+            return '用法: dark on | off';
+        },
+        theme(args) {
+            const v = args.trim();
+            if (!v) return '用法: theme <name> | theme list';
+            if (v === 'list' || v === '-l') {
+                return '可用壁纸（theme 后跟文件名）：\n' +
+                    '  webp/wallpaper-lake.webp       湖边小屋\n' +
+                    '  webp/wallpaper-lake-4.webp     湖畔\n' +
+                    '  webp/wallpaper-iridescence.webp 虹彩\n' +
+                    '  webp/wallpaper-bigsur.webp     Big Sur\n' +
+                    '  webp/wallpaper-39.webp         群山\n' +
+                    '  webp/wallpaper-47.webp         峡谷\n' +
+                    '  webp/wallpaper-55.webp         极光\n' +
+                    '  webp/wallpaper-dark.webp       暗色\n' +
+                    '  reset                         恢复默认渐变';
+            }
+            if (v === 'reset') {
+                // 直接删 key：同源 iframe 的 localStorage 删除会触发主窗口 storage 事件自动应用壁纸。
+                // 不能走 setWallpaper 存渐变字符串，否则主窗口 url('linear-gradient...') 无效。
+                localStorage.removeItem(WALL_KEY);
+                return '已恢复默认渐变';
+            }
+            return call('setWallpaper', v);
+        },
+        notify(args) {
+            const text = args.trim();
+            if (!text) return '用法: notify <文本>';
+            return call('notify', { title: '终端', message: text });
+        },
+        exit() {
+            window.parent.postMessage({ type: 'closeWindow' }, '*');
+            return '正在关闭终端...';
+        }
+    };
+
+    // ========== 输入行（真实 input） ==========
+    function createPromptRow() {
+        const row = document.createElement('div');
+        row.className = 'line input-row';
+        row.innerHTML = '<span class="prompt-prefix">' + USER + '</span>' +
+            '<span class="prompt-path">@' + HOST + '</span>' +
+            '<span class="prompt-sep">&nbsp;~&nbsp;%&nbsp;</span>' +
+            '<input type="text" class="cmd-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="" />';
+        body.appendChild(row);
+        inputEl = row.querySelector('.cmd-input');
+        scrollBottom();
+        return row;
+    }
+
+    function focusInput() {
+        if (inputEl) { inputEl.focus(); scrollBottom(); }
+    }
+
+    async function onSubmit() {
+        const value = inputEl.value;
+        if (!value.trim()) { focusInput(); return; }
+        const cmdText = value.trim();
+        // 1. 定格当前行：input 换成静态文本，保留命令回显
+        const span = document.createElement('span');
+        span.className = 'cmd-static';
+        span.textContent = cmdText;
+        inputEl.replaceWith(span);
+        inputEl = null;
+        // 2. 记录历史
+        history.push(cmdText);
+        if (history.length > 100) history.shift();
+        histIdx = -1;
+        // 3. 执行（输出追加到当前行之后）
+        await runCommand(cmdText);
+        // 4. 新建输入行（永远在末尾）
+        createPromptRow();
+        focusInput();
+    }
+
+    async function runCommand(cmdText) {
+        const parts = cmdText.split(/\s+/);
+        const cmd = parts[0].toLowerCase();
+        const args = parts.slice(1).join(' ');
+        const fn = commands[cmd];
+        if (!fn) {
+            print('zsh: command not found: ' + cmd + '（输入 help 查看可用命令）', 'out-err');
+            return;
+        }
+        try {
+            const result = await fn(args);
+            // 解包 call() 返回的 {ok, data} 对象，避免 [object Object]
+            const output = (result && typeof result === 'object' && 'data' in result) ? result.data : result;
+            if (output !== null && output !== undefined) {
+                String(output).split('\n').forEach((l, i) => print(l, i === 0 ? 'out-ok' : 'out'));
+            }
+        } catch (err) {
+            print('执行出错: ' + (err.message || err), 'out-err');
+        }
+    }
+
+    // ========== 事件 ==========
+    body.addEventListener('click', (e) => {
+        if (e.target !== inputEl) focusInput();
+    });
+
+    // 输入框按键：↑↓ 历史、Enter 提交（其余交给浏览器：中文/粘贴/快捷键全正常）
+    document.addEventListener('keydown', (e) => {
+        if (document.activeElement !== inputEl) return;
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            onSubmit();
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (history.length > 0) {
+                histIdx = (histIdx === -1) ? history.length - 1 : Math.max(0, histIdx - 1);
+                inputEl.value = history[histIdx];
+                // 光标移到末尾
+                setTimeout(() => inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length), 0);
+            }
+        } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            if (histIdx !== -1) {
+                histIdx++;
+                if (histIdx >= history.length) { histIdx = -1; inputEl.value = ''; }
+                else inputEl.value = history[histIdx];
+                setTimeout(() => inputEl.setSelectionRange(inputEl.value.length, inputEl.value.length), 0);
+            }
+        }
+    });
+
+    // ========== 初始化 ==========
+    function init() {
+        print('Last login: ' + new Date().toLocaleString('zh-CN'), 'out-dim');
+        print('欢迎使用 macOS 网页版终端。输入 help 查看可用命令。', 'out-info');
+        promptRow = createPromptRow();
+        inputEl = promptRow.querySelector('.cmd-input');
+        // 点击终端任意处聚焦输入框
+        body.addEventListener('mousedown', (e) => {
+            if (e.target !== inputEl) setTimeout(() => inputEl.focus(), 0);
+        });
+        inputEl.focus();
+        // 请求深色模式
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'getDarkMode' }, '*');
+        }
+    }
+    window.addEventListener('message', (e) => {
+        const d = e.data;
+        if (d && d.type === 'darkMode') {
+            document.body.classList.toggle('dark-mode', d.enabled);
+        }
+    });
+
+    init();
+})();
+</script>
+<script>
+(function(){
+    var seq = 0;
+    var pending = {};
+    window.addEventListener('message', function(e){
+        var d = e.data;
+        if (d && d.type === 'macosDialogResult' && pending[d.reqId]) {
+            pending[d.reqId](d.result);
+            delete pending[d.reqId];
+        }
+    });
+    function send(op, payload) {
+        return new Promise(function(resolve){
+            var reqId = ++seq;
+            pending[reqId] = resolve;
+            window.parent.postMessage({ type: 'macosDialog', reqId: reqId, op: op, payload: payload || {} }, '*');
+            setTimeout(function(){
+                if (pending[reqId]) { delete pending[reqId]; resolve(null); }
+            }, 60000);
+        });
+    }
+    window.alert = function(msg){ send('alert', { message: msg }); };
+    window.confirm = function(msg){ return send('confirm', { title: '确认', message: msg }); };
+    window.prompt = function(msg, def){ return send('prompt', { title: '输入', message: msg, value: def }); };
+})();
+</script></body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天气</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .container {
+            text-align: center;
+            padding: 48px 40px;
+            max-width: 420px;
+        }
+        .icon-wrap {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            border-radius: 24px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .icon-wrap svg { width: 36px; height: 36px; opacity: 0.85; }
+        h1 { font-size: 22px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.3px; }
+        p { font-size: 14px; line-height: 1.7; opacity: 0.75; }
+    </style>
+    <base target="_blank">
+    <style>
+    body { cursor: url('../webp/cursor-normal.png') 4 4, default; }
+    input, textarea, [contenteditable="true"] { cursor: text; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon-wrap">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
+            </svg>
+        </div>
+        <h1>您所在的地区无法使用此 App</h1>
+        <p>天气服务当前不可用。请尝试使用系统自带的天气应用或其他来源获取天气信息。</p>
+    </div>
+
+    <!-- 深色模式监听 -->
+    <script>
+    window.addEventListener('message', function(e) {
+        var d = e.data;
+        if (d && d.type === 'darkMode') {
+            document.body.classList.toggle('dark-mode', d.enabled);
+        }
+    });
+    if (window.parent !== window) {
+        window.parent.postMessage({ type: 'getDarkMode' }, '*');
+    }
+    </script>
+
+    <!-- 对话框代理 -->
+    <script>
+    (function(){
+        var seq = 0;
+        var pending = {};
+        window.addEventListener('message', function(e){
+            var d = e.data;
+            if (d && d.type === 'macosDialogResult' && pending[d.reqId]) {
+                pending[d.reqId](d.result);
+                delete pending[d.reqId];
+            }
+        });
+        function send(op, payload) {
+            return new Promise(function(resolve){
+                var reqId = ++seq;
+                pending[reqId] = resolve;
+                window.parent.postMessage({ type: 'macosDialog', reqId: reqId, op: op, payload: payload || {} }, '*');
+                setTimeout(function(){
+                    if (pending[reqId]) { delete pending[reqId]; resolve(null); }
+                }, 60000);
+            });
+        }
+        window.alert = function(msg){ send('alert', { message: msg }); };
+        window.confirm = function(msg){ return send('confirm', { title: '确认', message: msg }); };
+        window.prompt = function(msg, def){ return send('prompt', { title: '输入', message: msg, value: def }); };
+    })();
+    </script>
+</body>
+</html>

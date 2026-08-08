@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>系统设置</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: rgba(242, 242, 246, 0.92);
+            --sidebar-bg: rgba(255, 255, 255, 0.7);
+            --card-bg: rgba(255, 255, 255, 0.82);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #1c1c1e;
+            --text-secondary: #3a3a3c;
+            --separator: rgba(60, 60, 67, 0.08);
+            --hover-bg: rgba(0, 0, 0, 0.05);
+            --active-bg: rgba(0, 122, 255, 0.12);
+            --active-text: #007aff;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark-mode {
+            --bg-primary: rgba(30, 30, 34, 0.94);
+            --sidebar-bg: rgba(40, 40, 44, 0.85);
+            --card-bg: rgba(50, 50, 55, 0.88);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f5f5f7;
+            --text-secondary: #aeaeb2;
+            --separator: rgba(255, 255, 255, 0.08);
+            --hover-bg: rgba(255, 255, 255, 0.08);
+            --active-bg: rgba(0, 122, 255, 0.25);
+            --active-text: #0a84ff;
+            --shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: transparent;
+        }
+
+        body {
+            font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            background: transparent;
+            display: block;
+            overflow: hidden;
+        }
+
+        .settings-window {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            backdrop-filter: blur(35px);
+            border-radius: 0;
+            box-shadow: none;
+            display: flex;
+            overflow: hidden;
+            border: none;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar {
+            width: 240px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(20px);
+            border-right: 0.5px solid var(--border-color);
+            padding: 24px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+
+        .sidebar-item {
+            padding: 10px 14px;
+            margin: 0 6px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: all 0.12s ease;
+            white-space: nowrap;
+        }
+
+        .sidebar-item i {
+            width: 22px;
+            font-size: 16px;
+            color: var(--text-secondary);
+            transition: color 0.12s;
+        }
+
+        .sidebar-item:hover {
+            background: var(--hover-bg);
+        }
+
+        .sidebar-item.active {
+            background: var(--active-bg);
+            color: var(--active-text);
+        }
+        .sidebar-item.active i {
+            color: var(--active-text);
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 32px 32px 32px;
+            scrollbar-width: thin;
+        }
+        .content-area::-webkit-scrollbar {
+            width: 6px;
+        }
+        .content-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .content-area::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .settings-panel {
+            display: none;
+            animation: fadeIn 0.2s ease;
+        }
+        .settings-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pref-group {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            border: 0.5px solid var(--border-color);
+            overflow: hidden;
+            transition: background 0.2s;
+        }
+
+        .group-title {
+            padding: 16px 20px 8px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 20px;
+            border-top: 0.5px solid var(--separator);
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+        .setting-row:first-of-type {
+            border-top: none;
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .setting-label i {
+            width: 24px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #80808080;
+            transition: 0.2s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.2s;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider {
+            background-color: #34c759;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+
+        .about-mac {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 12px 20px;
+        }
+        .mac-icon {
+            font-size: 42px;
+            color: var(--text-primary);
+        }
+        .mac-info h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .mac-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+        .version-chip {
+            background: rgba(0,122,255,0.15);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        .info-row {
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 0.5px solid var(--separator);
+            font-size: 14px;
+        }
+        .info-label {
+            color: var(--text-secondary);
+        }
+        .info-value {
+            font-weight: 500;
+        }
+
+        hr {
+            margin: 12px 20px;
+            border: none;
+            border-top: 0.5px solid var(--separator);
+        }
+
+        .wallpaper-preview {
+            width: 100%;
+            max-width: 280px;
+            height: 150px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            border: 0.5px solid var(--border-color);
+        }
+        #wallpaperReset {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #007aff;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        #wallpaperReset:hover { background: #0a84ff; }
+        input[type="file"] { color: var(--text-secondary); font-size: 13px; max-width: 280px; }
+
+        /* 默认壁纸库 */
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 12px;
+            width: 100%;
+            max-width: 620px;
+        }
+        .wallpaper-thumb {
+            position: relative;
+            aspect-ratio: 16 / 10;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s ease, transform 0.15s ease;
+            overflow: hidden;
+        }
+        .wallpaper-thumb:hover {
+            border-color: rgba(0, 122, 255, 0.6);
+            transform: scale(1.03);
+        }
+        .wallpaper-thumb.active {
+            border-color: #007aff;
+            box-shadow: 0 0 0 1px #007aff, 0 4px 14px rgba(0, 122, 255, 0.25);
+        }
+        .wallpaper-thumb .thumb-name {
+            position: absolute;
+            left: 0; right: 0; bottom: 0;
+            padding: 4px 8px;
+            font-size: 11px;
+            color: #fff;
+            background: linear-gradient(transparent, rgba(0,0,0,0.55));
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+body { cursor: url('../webp/cursor-normal.png') 4 4, default; }
+input, textarea, [contenteditable="true"] { cursor: text; }
+</style>
+</head>
+<body>
+<div class="settings-window">
+    <div class="sidebar">
+        <div class="sidebar-item active" data-panel="general">
+            <i class="fas fa-sliders-h"></i> <span>通用</span>
+        </div>
+        <div class="sidebar-item" data-panel="about">
+            <i class="fab fa-apple"></i> <span>关于本机</span>
+        </div>
+        <div class="sidebar-item" data-panel="focus">
+            <i class="fas fa-moon"></i> <span>专注模式</span>
+        </div>
+        <div class="sidebar-item" data-panel="screentime">
+            <i class="fas fa-clock"></i> <span>屏幕使用时间</span>
+        </div>
+        <div class="sidebar-item" data-panel="appearance">
+            <i class="fas fa-palette"></i> <span>外观</span>
+        </div>
+        <div class="sidebar-item" data-panel="wallpaper">
+            <i class="fas fa-image"></i> <span>墙纸</span>
+        </div>
+        <div class="sidebar-item" data-panel="dock">
+            <i class="fas fa-th-large"></i> <span>Dock 与菜单栏</span>
+        </div>
+    </div>
+
+    <div class="content-area">
+        <div id="panel-general" class="settings-panel active-panel">
+            <div class="pref-group">
+                <div class="group-title">通用</div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-power-off"></i> 启动时自动打开上次的窗口</div>
+                    <label class="switch"><input type="checkbox" id="autoOpen"><span class="slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-question-circle"></i> 关闭窗口时确认</div>
+                    <label class="switch"><input type="checkbox" id="confirmClose"><span class="slider"></span></label>
+                </div>
+            </div>
+            <div class="pref-group">
+                <div class="group-title">语言与地区</div>
+                <div class="info-row">
+                    <span class="info-label">首选语言</span>
+                    <span class="info-value">简体中文 (CN)</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">地区</span>
+                    <span class="info-value">中国大陆</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-about" class="settings-panel">
+            <div class="pref-group">
+                <div class="about-mac">
+                    <div class="mac-icon"><i class="fab fa-apple"></i></div>
+                    <div class="mac-info">
+                        <h4>孤独的鹅</h4>
+                        <p>macOS Sequoia 15.4</p>
+                        <span class="version-chip">版本 15.4 (24E247)</span>
+                    </div>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">芯片</span>
+                    <span class="info-value">Apple A8X</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">内存</span>
+                    <span class="info-value">1 GB </span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">启动磁盘</span>
+                    <span class="info-value">Macintosh HD</span>
+                </div>
+                <hr>
+                <div class="info-row">
+                    <span class="info-label">序列号</span>
+                    <span class="info-value">C02GQ2K7LVC9</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-focus" class="settings-panel">
+            <div class="pref-group">
+                <div class="group-title">勿扰模式</div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-bell-slash"></i> 勿扰模式</div>
+                    <label class="switch"><input type="checkbox" id="doNotDisturb"><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-screentime" class="settings-panel">
+            <div class="pref-group">
+                <div class="group-title">屏幕使用时间</div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-chart-line"></i> 打开屏幕使用时间</div>
+                    <label class="switch"><input type="checkbox" id="screenTimeToggle"><span class="slider"></span></label>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">累计使用</span>
+                    <span class="info-value" id="screenTimeTotal">0分钟</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-appearance" class="settings-panel">
+            <div class="pref-group">
+                <div class="group-title">外观</div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-moon"></i> 深色模式</div>
+                    <label class="switch"><input type="checkbox" id="darkModeToggle"><span class="slider"></span></label>
+                </div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-desktop"></i> 显示桌面图标</div>
+                    <label class="switch"><input type="checkbox" id="iconsToggle" checked><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-wallpaper" class="settings-panel">
+            <div class="pref-group">
+                <div class="group-title">桌面墙纸</div>
+                <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:14px;">
+                    <div class="setting-label"><i class="fas fa-palette"></i> 内置壁纸</div>
+                    <div class="wallpaper-grid" id="wallpaperGrid"></div>
+                    <hr class="settings-sep">
+                    <div class="setting-label"><i class="fas fa-image"></i> 上传自定义墙纸</div>
+                    <input type="file" id="wallpaperInput" accept="image/*" />
+                    <div id="wallpaperPreview" class="wallpaper-preview"></div>
+                    <button type="button" id="wallpaperReset">恢复默认渐变</button>
+                    <div class="auth-error" id="wallpaperError"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-dock" class="settings-panel">
+            <div class="pref-group">
+                <div class="group-title">Dock</div>
+                <div class="setting-row">
+                    <div class="setting-label"><i class="fas fa-eye-slash"></i> 自动隐藏 Dock</div>
+                    <label class="switch"><input type="checkbox" id="autoHideDock"><span class="slider"></span></label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function $(id) { return document.getElementById(id); }
+
+    // ========== 偏好读写：与父窗口共享同一份 localStorage（同源 iframe） ==========
+    const PREFS_KEY = 'macos_prefs';
+    function readPrefs() {
+        try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }
+        catch(e) { return {}; }
+    }
+    function getPref(key, def) {
+        const v = readPrefs()[key];
+        return v === undefined ? def : v;
+    }
+    function writePref(key, value) {
+        const prefs = readPrefs();
+        prefs[key] = value;
+        localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+    }
+
+    // 回显全部开关（打开设置页时 / 收到 storage 事件时）
+    function syncSwitches() {
+        const bind = (id, key, def) => {
+            const el = $(id);
+            if (el) el.checked = getPref(key, def);
+        };
+        bind('autoOpen', 'autoOpenWindows', false);
+        bind('confirmClose', 'confirmWindowClose', false);
+        bind('darkModeToggle', 'darkMode', false);
+        bind('iconsToggle', 'showDesktopIcons', true);
+        bind('autoHideDock', 'autoHideDock', false);
+        bind('doNotDisturb', 'focusMode', false);
+        bind('screenTimeToggle', 'screenTime', false);
+        renderScreenTime();
+        applyDarkModeToBody();
+    }
+
+    // 深色模式应用到 iframe 自己的 body
+    function applyDarkModeToBody() {
+        const on = getPref('darkMode', false);
+        document.body.classList.toggle('dark-mode', on);
+    }
+
+    function renderScreenTime() {
+        const minutes = parseInt(localStorage.getItem('macos_screentime_minutes') || '0', 10);
+        const el = $('screenTimeTotal');
+        if (!el) return;
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        el.textContent = h > 0 ? `${h}小时 ${m}分钟` : `${m}分钟`;
+    }
+
+    // 所有开关 change → 直接写 localStorage，父窗口通过 storage 事件自动同步
+    const SWITCH_MAP = [
+        ['autoOpen', 'autoOpenWindows'],
+        ['confirmClose', 'confirmWindowClose'],
+        ['darkModeToggle', 'darkMode'],
+        ['iconsToggle', 'showDesktopIcons'],
+        ['autoHideDock', 'autoHideDock'],
+        ['doNotDisturb', 'focusMode'],
+        ['screenTimeToggle', 'screenTime']
+    ];
+    SWITCH_MAP.forEach(([id, key]) => {
+        const el = $(id);
+        if (el) {
+            el.addEventListener('change', () => {
+                writePref(key, el.checked);
+                if (key === 'darkMode') applyDarkModeToBody();
+            });
+        }
+    });
+
+    // 监听 storage 事件：父窗口或其它窗口改偏好时自动回显
+    window.addEventListener('storage', (e) => {
+        if (e.key === PREFS_KEY) syncSwitches();
+        if (e.key === 'macos_screentime_minutes') renderScreenTime();
+    });
+
+    // ========== 桌面墙纸：上传 / 预览 / 恢复默认 ==========
+    const WALL_KEY = 'macos_wallpaper';
+    const wallInput = $('wallpaperInput');
+    const wallPreview = $('wallpaperPreview');
+    const wallError = $('wallpaperError');
+
+    // ========== 内置壁纸库 ==========
+    const BUILTIN_WALLPAPERS = [
+        { file: 'webp/wallpaper-lake.webp',        name: '湖边小屋' },
+        { file: 'webp/wallpaper-lake-4.webp',      name: '湖畔' },
+        { file: 'webp/wallpaper-iridescence.webp', name: '虹彩' },
+        { file: 'webp/wallpaper-bigsur.webp',      name: 'Big Sur' },
+        { file: 'webp/wallpaper-39.webp',          name: '群山' },
+        { file: 'webp/wallpaper-47.webp',          name: '峡谷' },
+        { file: 'webp/wallpaper-55.webp',          name: '极光' },
+        { file: 'webp/wallpaper-dark.webp',        name: '暗色' }
+    ];
+    const wallpaperGrid = $('wallpaperGrid');
+
+    function isCustomWallpaper(v) {
+        return v && v.startsWith('data:');
+    }
+
+    // 显示路径：settings.html 位于 apps/ 子目录，本地壁纸路径需加 ../ 前缀
+    // 存储路径保持 'webp/xxx.webp'（父窗口 index.html 根目录用它）
+    function displayWallpaperPath(p) {
+        return (p && !p.startsWith('data:') && !p.startsWith('../')) ? '../' + p : p;
+    }
+
+    function renderWallpaperGrid() {
+        if (!wallpaperGrid) return;
+        const current = localStorage.getItem(WALL_KEY);
+        wallpaperGrid.innerHTML = '';
+        BUILTIN_WALLPAPERS.forEach(w => {
+            const div = document.createElement('div');
+            div.className = 'wallpaper-thumb' + (current === w.file ? ' active' : '');
+            div.style.backgroundImage = `url('${displayWallpaperPath(w.file)}')`;
+            div.title = w.name;
+            div.innerHTML = `<span class="thumb-name">${w.name}</span>`;
+            div.addEventListener('click', () => {
+                try {
+                    localStorage.setItem(WALL_KEY, w.file);
+                    wallError.textContent = '';
+                    renderWallpaperPreview();
+                    renderWallpaperGrid();
+                } catch (err) {
+                    wallError.textContent = '切换失败';
+                }
+            });
+            wallpaperGrid.appendChild(div);
+        });
+    }
+
+    function renderWallpaperPreview() {
+        if (!wallPreview) return;
+        const v = localStorage.getItem(WALL_KEY);
+        wallPreview.style.backgroundImage = v
+            ? `url('${displayWallpaperPath(v)}')`
+            : 'linear-gradient(135deg, #4b2c6f, #7b3f8f, #c96f8f, #f0a06a)';
+    }
+    if (wallInput) {
+        wallInput.addEventListener('change', () => {
+            const file = wallInput.files[0];
+            if (!file) return;
+            if (file.size > 4 * 1024 * 1024) {
+                wallError.textContent = '图片太大，建议 < 4MB（localStorage 容量有限）';
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    localStorage.setItem(WALL_KEY, reader.result);
+                    wallError.textContent = '';
+                    renderWallpaperPreview();
+                    renderWallpaperGrid();
+                } catch (err) {
+                    wallError.textContent = '保存失败：图片超出本地存储上限，请换更小的图';
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    const wallResetBtn = $('wallpaperReset');
+    if (wallResetBtn) {
+        wallResetBtn.addEventListener('click', () => {
+            localStorage.removeItem(WALL_KEY);
+            wallError.textContent = '';
+            renderWallpaperPreview();
+            renderWallpaperGrid();
+        });
+    }
+    renderWallpaperPreview();
+    renderWallpaperGrid();
+
+    const panels = {
+        general: $('panel-general'),
+        about: $('panel-about'),
+        focus: $('panel-focus'),
+        screentime: $('panel-screentime'),
+        appearance: $('panel-appearance'),
+        wallpaper: $('panel-wallpaper'),
+        dock: $('panel-dock')
+    };
+
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    function switchToPanel(panelId) {
+        Object.values(panels).forEach(panel => {
+            if (panel) panel.classList.remove('active-panel');
+        });
+        const activePanel = panels[panelId];
+        if (activePanel) activePanel.classList.add('active-panel');
+
+        sidebarItems.forEach(item => {
+            const val = item.getAttribute('data-panel');
+            if (val === panelId) {
+                item.classList.add('active');
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            const panelId = item.getAttribute('data-panel');
+            if (panelId && panels[panelId]) {
+                switchToPanel(panelId);
+            }
+        });
+    });
+
+    // 初始化
+    syncSwitches();
+</script>
+<script>
+(function(){
+    var seq = 0;
+    var pending = {};
+    window.addEventListener('message', function(e){
+        var d = e.data;
+        if (d && d.type === 'macosDialogResult' && pending[d.reqId]) {
+            pending[d.reqId](d.result);
+            delete pending[d.reqId];
+        }
+    });
+    function send(op, payload) {
+        return new Promise(function(resolve){
+            var reqId = ++seq;
+            pending[reqId] = resolve;
+            window.parent.postMessage({ type: 'macosDialog', reqId: reqId, op: op, payload: payload || {} }, '*');
+            setTimeout(function(){
+                if (pending[reqId]) { delete pending[reqId]; resolve(null); }
+            }, 60000);
+        });
+    }
+    window.alert = function(msg){ send('alert', { message: msg }); };
+    window.confirm = function(msg){ return send('confirm', { title: '确认', message: msg }); };
+    window.prompt = function(msg, def){ return send('prompt', { title: '输入', message: msg, value: def }); };
+})();
+</script></body>
+</html>

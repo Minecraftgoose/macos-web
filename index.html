@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>macOS 网页版</title>
+
+    <!-- PWA Manifest -->
+    <!-- Favicon Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
+    <link rel="shortcut icon" href="icons/favicon.ico">
+
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+
+    <!-- Safari Pinned Tab -->
+    <!-- MS Tile Icons -->
+    <!-- Theme Colors -->
+    <meta name="theme-color" content="#007aff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1c1c1e" media="(prefers-color-scheme: dark)">
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- 核心样式文件 -->
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/boot.css">
+    <link rel="stylesheet" href="./css/siri.css">
+    <link rel="stylesheet" href="./css/control-center.css">
+    <link rel="stylesheet" href="./css/dock.css">
+    <link rel="stylesheet" href="./css/window.css">
+    <link rel="stylesheet" href="./css/animation.css">
+    <link rel="stylesheet" href="./css/dynamic-island.css">
+    <link rel="stylesheet" href="./css/onboarding.css">
+    <base target="_blank">
+</head>
+<body>
+    <!-- 开机动画层（已改为苹果 Logo + 进度条） -->
+    <div id="boot-screen" class="boot-screen">
+        <div class="boot-content">
+            <!-- 苹果 Logo（使用 Font Awesome 图标） -->
+            <div class="boot-logo">
+                <i class="fab fa-apple"></i>
+            </div>
+            <!-- 进度条 -->
+            <div class="boot-progress-container">
+                <div class="boot-progress-bar"></div>
+            </div>
+            <!-- 提示文字 -->
+            <div class="boot-hint">正在启动 macOS...</div>
+        </div>
+    </div>
+
+    <div id="siri-panel" class="siri-panel">
+        <div id="poda">
+            <div class="glow"></div>
+            <div class="darkBorderBg"></div>
+            <div class="darkBorderBg"></div>
+            <div class="darkBorderBg"></div>
+            <div class="white"></div>
+            <div class="border"></div>
+            <div id="main">
+                <input placeholder="Search..." type="text" name="text" class="input" id="siri-panel-input" />
+                <div id="input-mask"></div>
+                <div id="pink-mask"></div>
+            </div>
+        </div>
+        <div class="chat-container" id="siri-chat-container"></div>
+    </div>
+
+    <div id="control-center" class="control-center" aria-label="控制中心" role="dialog">
+        <div class="cc-header">
+            <span class="cc-title"><i class="fas fa-sliders-h" style="margin-right: 8px;"></i>控制中心</span>
+            <button class="cc-close" id="cc-close-btn" aria-label="关闭"><i class="fas fa-chevron-up"></i></button>
+        </div>
+        <div class="cc-grid">
+        </div>
+        <div class="cc-footer">
+            <button class="cc-quick-btn" id="cc-lock"><i class="fas fa-lock"></i> 锁定屏幕</button>
+            <button class="cc-quick-btn" id="cc-sleep"><i class="fas fa-bed"></i> 睡眠</button>
+        </div>
+    </div>
+
+    <!-- 桌面背景层 -->
+    <div class="desktop" style="padding-top: 28px;">
+        <div class="desktop-icons">
+            <div class="desktop-icon" draggable="true" data-type="folder" data-name="文档" data-app="finder">
+                <div class="icon-container">
+                    <img src="./webp/folder.webp" alt="文档" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-folder" style="display: none; font-size: 50px; color: #4a90e2;"></i>
+                </div>
+                <span>文档</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="Safari" data-app="safari">
+                <div class="icon-container">
+                    <img src="./webp/safari.webp" alt="Safari" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-globe" style="display: none; font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>Safari</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="日历" data-app="calendar">
+                <div class="icon-container">
+                    <img src="./webp/calendar.webp" alt="日历" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-calendar-alt" style="display: none; font-size: 50px; color: #ff3b30;"></i>
+                </div>
+                <span>日历</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="天气" data-app="weather">
+                <div class="icon-container">
+                    <img src="./webp/weather.webp" alt="天气" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-star-of-life" style="display: none; font-size: 50px; color: #30d158;"></i>
+                </div>
+                <span>天气</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="照片" data-app="photos">
+                <div class="icon-container">
+                    <img src="./webp/photos.webp" alt="照片" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-images" style="display: none; font-size: 50px; color: #ff9500;"></i>
+                </div>
+                <span>照片</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="终端" data-app="terminal">
+                <div class="icon-container">
+                    <img src="./webp/terminal.webp" alt="终端" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-terminal" style="display: none; font-size: 50px; color: #1d1d1f;"></i>
+                </div>
+                <span>终端</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="yd" data-app="yd">
+                <div class="icon-container">
+                    <img src="./webp/yd.webp" alt="网易有道" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-language" style="display: none; font-size: 50px; color: #30d158;"></i>
+                </div>
+                <span>网易有道</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="关于本机" data-app="about">
+                <div class="icon-container">
+                    <img src="./webp/about.webp" alt="关于本机" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-info-circle" style="display: none; font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>关于本机</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="备忘录" data-app="quest">
+                <div class="icon-container">
+                    <img src="./webp/quest.webp" alt="备忘录" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-info-circle" style="display: none; font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>备忘录</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="JHAI" data-app="xn">
+                <div class="icon-container">
+                    <img src="./webp/xn.webp" alt="JHAI" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-info-circle" style="display: none; font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>JHAI</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="App Store" data-app="appstore">
+                <div class="icon-container">
+                    <img src="./webp/appstore.webp" alt="App Store" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-info-circle" style="display: none; font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>App Store</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="测试" data-app="text">
+                <div class="icon-container">
+                    <i class="fas fa-file-alt" style="font-size: 50px; color: #007aff;"></i>
+                </div>
+                <span>测试</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 顶部菜单栏 -->
+    <div class="menu-bar">
+        <div class="menu-left">
+            <div class="menu-item"><span class="menu-title"><i class="fab fa-apple"></i></span><div class="submenu"><ul><li><a href="#">关于本机</a></li><li><a href="#" id="menu-settings">系统偏好设置</a></li><li class="separator"></li><li><a href="#">App Store...</a></li><li><a href="#">访达</a></li></ul></div></div>
+            <div class="menu-item"><span class="menu-title">文件</span><div class="submenu"><ul><li><a href="#">新建访达窗口</a></li><li class="separator"></li><li><a href="#">关闭</a></li><li><a href="#">关闭所有窗口</a></li></ul></div></div>
+            <div class="menu-item"><span class="menu-title">显示</span><div class="submenu"><ul><li><a href="#">整理</a></li></ul></div></div>
+            <div class="menu-item"><span class="menu-title">前往</span><div class="submenu"><ul><li><a href="#">应用程序</a></li><li><a href="#">桌面</a></li><li><a href="#">文稿</a></li></ul></div></div>
+            <div class="menu-item"><span class="menu-title">窗口</span><div class="submenu"><ul><li><a href="#">最小化</a></li><li><a href="#">缩放</a></li></ul></div></div>
+            <div class="menu-item"><span class="menu-title">帮助</span><div class="submenu"><ul><li><a href="#">macOS 帮助</a></li></ul></div></div>
+        </div>
+        <div class="menu-right">
+            <div class="menu-item" id="control-center-trigger" title="控制中心">
+                <span class="menu-title"><i class="fas fa-sliders-h"></i></span>
+            </div>
+            <!-- Siri 按钮 -->
+            <div class="menu-item siri-btn" id="siri-trigger" title="Ask Siri">
+                <div style="display: flex; align-items: center; padding: 0 8px; height: 26px;">
+                    <img src="./webp/siri.webp" alt="Siri" style="height: 18px; width: auto; display: block;">
+                </div>
+            </div>
+            <div class="menu-item" id="spotlight-trigger" title="Spotlight 搜索"><span class="menu-title"><i class="fas fa-search"></i></span></div>
+            <div class="menu-item"><span class="menu-title" id="current-time">12:00</span></div>
+        </div>
+    </div>
+
+    <!-- 底部程序坞 -->
+    <div class="dock-wrapper">
+        <!-- 固定 Dock  -->
+        <div class="dock-panel dock-panel-fixed" id="dock-panel-fixed">
+            <!-- 固定应用项 -->
+            <div class="dock-item dock-item-fixed" data-app="finder" title="访达">
+                <div class="dock-icon">
+                    <img src="./webp/finder.webp" alt="访达" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-folder" style="display: none; font-size: 28px; color: #007aff;"></i>
+                </div>
+                <div class="dock-label">访达</div>
+                <div class="dock-indicator"></div>
+            </div>
+
+                        <!-- Launchpad -->
+            <div class="dock-item dock-item-fixed" data-launchpad="true" title="Launchpad">
+                <div class="dock-icon">
+                    <img src="./webp/launchpad.webp" alt="Launchpad" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-th-large" style="display: none; font-size: 24px; color: #fff;"></i>
+                </div>
+                <div class="dock-label">Launchpad</div>
+            </div>
+
+            <div class="dock-item dock-item-fixed" data-app="safari" title="Safari">
+                <div class="dock-icon">
+                    <img src="./webp/safari.webp" alt="Safari" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-globe" style="display: none; font-size: 28px; color: #007aff;"></i>
+                </div>
+                <div class="dock-label">Safari</div>
+                <div class="dock-indicator"></div>
+            </div>
+
+            <div class="dock-item dock-item-fixed" data-app="calendar" title="日历">
+                <div class="dock-icon">
+                    <img src="./webp/calendar.webp" alt="日历" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-calendar-alt" style="display: none; font-size: 28px; color: #ff3b30;"></i>
+                </div>
+                <div class="dock-label">日历</div>
+                <div class="dock-indicator"></div>
+            </div>
+
+            <div class="dock-item dock-item-fixed" data-app="settings" title="系统偏好设置">
+                <div class="dock-icon">
+                    <img src="./webp/settings.webp" alt="设置" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-cog" style="display: none; font-size: 28px; color: #8e8e93;"></i>
+                </div>
+                <div class="dock-label">设置</div>
+                <div class="dock-indicator"></div>
+            </div>
+
+            <!-- 分隔线 -->
+            <div class="dock-divider"></div>
+
+            <!-- 废纸篓 -->
+            <div class="dock-item dock-item-fixed" data-app="trash" title="废纸篓">
+                <div class="dock-icon">
+                    <img src="./webp/trash.webp" alt="废纸篓" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-trash-alt" style="display: none; font-size: 28px; color: #8e8e93;"></i>
+                </div>
+                <div class="dock-label">废纸篓</div>
+            </div>
+        </div>
+
+        <!-- 动态 Dock  -->
+        <div class="dock-panel dock-panel-dynamic" id="dock-panel-dynamic">
+            <div class="dock-placeholder" id="dock-placeholder">
+                <span class="placeholder-text">运行中的应用将显示在这里</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight 搜索 -->
+    <div id="spotlight-overlay" class="spotlight-overlay" aria-hidden="true">
+        <div class="spotlight-box">
+            <div class="spotlight-input-row">
+                <i class="fas fa-search spotlight-icon"></i>
+                <input type="text" id="spotlight-input" placeholder="Spotlight 搜索" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="spotlight-results" id="spotlight-results"></div>
+            <div class="spotlight-hint">
+                <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+                <span><kbd>↵</kbd> 打开</span>
+                <span><kbd>Esc</kbd> 关闭</span>
+            </div>
+        </div>
+    </div>
+
+        <!-- Launchpad 全屏应用网格 -->
+    <div id="launchpad-overlay" class="launchpad-overlay" aria-hidden="true">
+        <div class="launchpad-search-row">
+            <i class="fas fa-search launchpad-search-icon"></i>
+            <input type="text" id="launchpad-search" placeholder="搜索" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="launchpad-grid" id="launchpad-grid"></div>
+    </div>
+
+    <!-- JavaScript 文件（加载顺序即依赖顺序，勿乱调） -->
+    <!-- 1. 配置（appConfig + API Key） -->
+    <script src="modules/config.js"></script>
+    <!-- 0.5 开机引导 / 登录（模拟，main.js 调用） -->
+    <script src="modules/onboarding.js"></script>
+    <!-- 2. 工具与窗口系统 -->
+    <script src="modules/utils.js"></script>
+    <script src="./modules/drag-resize.js"></script>
+    <script src="./modules/window-core.js"></script>
+    <script src="./modules/app-store.js"></script>
+    <script src="./modules/dialog.js"></script>
+    <script src="./modules/message.js"></script>
+    <!-- 3. 主入口（系统初始化） -->
+	<script src="modules/main.js"></script>
+    <!-- 4. 功能模块 -->
+    <script src="./modules/siri.js"></script>
+    <script src="./modules/control-center.js"></script>
+    <script src="./modules/animation.js"></script>
+    <script src="./modules/dock.js"></script>
+    <script src="./modules/spotlight.js"></script>
+    <script src="./modules/launchpad.js"></script>
+    <script src="./modules/dynamic-island.js"></script>
+</body>
+</html>

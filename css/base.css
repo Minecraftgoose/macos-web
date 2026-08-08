@@ -1,0 +1,1117 @@
+/* ========== 全局样式重置 ========== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ========== CSS变量定义 ========== */
+:root {
+    --bg-primary: rgba(242, 242, 247, 0.8);
+    --bg-secondary: rgba(255, 255, 255, 0.6);
+    --bg-tertiary: rgba(242, 242, 247, 0.3);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --text-primary: rgba(0, 0, 0, 0.8);
+    --text-secondary: rgba(0, 0, 0, 0.6);
+    --accent-color: #8500ff;
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-medium: rgba(0, 0, 0, 0.15);
+    --shadow-heavy: rgba(0, 0, 0, 0.2);
+    --hover-bg: rgba(0, 122, 255, 0.05);
+    --active-bg: rgba(0, 122, 255, 0.15);
+    --easing-bounce: cubic-bezier(0.32, 0.72, 0, 1);
+    --transition-normal: 0.3s;
+}
+
+/* ========== 字体设置 ========== */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text-primary);
+    background-color: #f2f2f7;
+    overflow: hidden;
+    user-select: none;
+    transition: all var(--transition-normal);
+    /* 苹果标志性黑指针（黑箭头+白描边，32x32，hotspot 在箭尖） */
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
+}
+
+/* ========== 桌面样式（背景色保持深色，壁纸由 JS 动态设置） ========== */
+.desktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1e1e2e;
+    background-image: linear-gradient(135deg, #4b2c6f 0%, #7b3f8f 38%, #c96f8f 72%, #f0a06a 100%);
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    padding-top: 28px;
+    padding-bottom: 78px;
+    transition: filter 0.3s ease;
+}
+
+body.dark-mode .desktop {
+    background-color: #1a1a2e;
+}
+
+/* ========== 深色模式通用样式 ========== */
+body.dark-mode {
+    --cc-bg: rgba(28, 28, 30, 0.9);
+}
+
+body.dark-mode .menu-bar,
+body.dark-mode .context-menu,
+body.dark-mode .window {
+    background: rgba(28, 28, 30, 0.7);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    color: #f0f0f0;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+body.dark-mode .window-header,
+body.dark-mode .window-toolbar,
+body.dark-mode .window-footer {
+    background: rgba(60, 60, 67, 0.6);
+}
+
+body.dark-mode .window-title,
+body.dark-mode .path-item {
+    color: #eee;
+}
+
+body.dark-mode .file-item span {
+    color: white;
+    text-shadow: 0 1px 2px black;
+}
+
+body.dark-mode .sidebar-item {
+    color: #eee;
+}
+
+body.dark-mode .sidebar-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .breadcrumb {
+    background: rgba(0, 0, 0, 0.3);
+    color: #eee;
+}
+
+/* ========== 桌面图标样式 ========== */
+.desktop-icons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 80px);
+    gap: 20px;
+    padding: 20px;
+}
+
+.desktop-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.18s var(--easing-bounce), filter 0.2s ease;
+    width: 80px;
+}
+
+.desktop-icon:nth-child(1) { animation-delay: 0.05s; }
+.desktop-icon:nth-child(2) { animation-delay: 0.1s; }
+.desktop-icon:nth-child(3) { animation-delay: 0.15s; }
+.desktop-icon:nth-child(4) { animation-delay: 0.2s; }
+.desktop-icon:nth-child(5) { animation-delay: 0.25s; }
+
+.desktop-icon:hover {
+    /* 无任何悬浮位移/缩放效果 */
+}
+
+.desktop-icon:active {
+    transform: scale(0.98);
+}
+
+.desktop-icon .icon-container {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.desktop-icon .icon-container img,
+.desktop-icon .icon-container i {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.desktop-icon img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.desktop-icon span {
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.desktop-icon:hover span {
+    background-color: rgba(0, 122, 255, 0.7);
+    color: white;
+}
+
+/* ========== 菜单栏样式 ========== */
+.menu-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 28px;
+    background: rgba(30, 30, 40, 0.25);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    z-index: 10000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-left, .menu-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.menu-item {
+    position: relative;
+    margin: 0 2px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.15s var(--easing-bounce), transform 0.1s ease;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.menu-item:active {
+    transform: scale(0.97);
+}
+
+.menu-title {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.menu-item i {
+    transition: transform 0.2s var(--easing-bounce);
+}
+
+.menu-item:hover i {
+    transform: scale(1.1);
+}
+
+/* 下拉子菜单 */
+.submenu {
+    position: absolute;
+    top: 28px;
+    left: 0;
+    background: rgba(40, 30, 60, 0.75);
+    backdrop-filter: blur(25px) saturate(200%);
+    -webkit-backdrop-filter: blur(25px) saturate(200%);
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    min-width: 220px;
+    z-index: 10001;
+    display: none;
+    overflow: hidden;
+    padding: 6px 0;
+    transform-origin: top left;
+    animation: submenuAppear 0.2s var(--easing-bounce) forwards;
+}
+
+@keyframes submenuAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.menu-item:hover .submenu {
+    display: block;
+}
+
+.submenu ul {
+    list-style: none;
+}
+
+.submenu li {
+    padding: 0 6px;
+}
+
+.submenu li a {
+    display: flex;
+    align-items: center;
+    padding: 5px 12px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    transition: background-color 0.15s ease, padding-left 0.2s var(--easing-bounce);
+    gap: 12px;
+    border-radius: 6px;
+    margin: 1px 0;
+}
+
+.submenu li a:hover {
+    background-color: rgba(191, 90, 242, 0.6);
+    color: white;
+    padding-left: 16px;
+}
+
+.submenu li a i {
+    width: 18px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.separator {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    margin: 4px 6px;
+}
+
+.menu-right .menu-item .menu-title i {
+    font-size: 13px;
+}
+
+/* 深色模式菜单栏适配 */
+body.dark-mode .menu-bar {
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .submenu {
+    background: rgba(30, 25, 45, 0.85);
+}
+
+body.dark-mode .submenu li a {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* ========== 窗口样式 ========== */
+.window {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border-radius: 12px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+    min-width: 450px;
+    min-height: 350px;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: box-shadow 0.2s ease, opacity 0.3s;
+}
+
+.window:hover {
+    box-shadow: 0 28px 70px rgba(0, 0, 0, 0.32);
+}
+
+.window-header {
+    height: 46px;
+    background: linear-gradient(135deg, rgba(242, 242, 247, 0.7), rgba(229, 229, 234, 0.7));
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    cursor: grab;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    user-select: none;
+    touch-action: none;
+}
+
+.window-header:active {
+    cursor: grabbing;
+}
+
+.window-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-right: 16px;
+}
+
+/* ===== 红绿灯基础样式 ===== */
+.window-close,
+.window-minimize,
+.window-maximize {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;  /* 为伪元素提供定位基准 */
+}
+
+/* ===== 扩大点击区域（视觉不变） ===== */
+.window-close::before,
+.window-minimize::before,
+.window-maximize::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 50%;
+    z-index: 1;
+    pointer-events: auto;
+    background: transparent;
+}
+
+.window-close {
+    background-color: #ff5f56;
+}
+
+.window-minimize {
+    background-color: #ffbd2e;
+}
+
+.window-maximize {
+    background-color: #27c93f;
+}
+
+.window-close:hover {
+    transform: scale(1.15);
+    background-color: #ff3b30;
+}
+
+.window-minimize:hover {
+    transform: scale(1.15);
+    background-color: #ff9f0a;
+}
+
+.window-maximize:hover {
+    transform: scale(1.15);
+    background-color: #34c759;
+}
+
+
+.window-close:active,
+.window-minimize:active,
+.window-maximize:active {
+    transform: scale(0.95);
+}
+
+.window-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.85);
+    flex-grow: 1;
+    text-align: center;
+    letter-spacing: -0.2px;
+}
+
+.window-content {
+    flex-grow: 1;
+    overflow: hidden !important;
+    background: rgba(255, 255, 255, 0.35);
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    overflow: auto !important;
+    border: none;
+    pointer-events: auto;
+}
+
+.resize-handle {
+    position: absolute;
+    z-index: 999;
+    background: transparent;
+    touch-action: none;
+}
+
+/* 定位在窗口内边缘（.window 有 overflow:hidden，把手探出窗外会被裁掉导致点不到） */
+.resize-nw { top: 0; left: 0; width: 16px; height: 16px; cursor: nw-resize; }
+.resize-ne { top: 0; right: 0; width: 16px; height: 16px; cursor: ne-resize; }
+.resize-sw { bottom: 0; left: 0; width: 16px; height: 16px; cursor: sw-resize; }
+.resize-se { bottom: 0; right: 0; width: 16px; height: 16px; cursor: se-resize; }
+.resize-n { top: 0; left: 16px; right: 16px; height: 10px; cursor: n-resize; }
+.resize-s { bottom: 0; left: 16px; right: 16px; height: 10px; cursor: s-resize; }
+.resize-w { left: 0; top: 16px; bottom: 16px; width: 10px; cursor: w-resize; }
+.resize-e { right: 0; top: 16px; bottom: 16px; width: 10px; cursor: e-resize; }
+
+.window.minimized { display: none; }
+
+.window.maximized {
+    top: 28px !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: calc(100% - 106px) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* 深色模式窗口阴影 */
+body.dark-mode .window {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .window:hover {
+    box-shadow: 0 16px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ========== 右键菜单 ========== */
+.context-menu {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    z-index: 10002;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 6px 0;
+    transform-origin: top left;
+}
+
+.context-menu ul { list-style: none; }
+
+.context-menu li a {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: #1c1c1e;
+    font-size: 13px;
+    gap: 12px;
+    transition: background-color 0.15s, padding-left 0.2s;
+}
+
+.context-menu li a:hover {
+    background-color: #a200ff;
+    color: white;
+    padding-left: 20px;
+}
+
+/* ========== 响应式设计 ========== */
+@media (max-width: 768px) {
+    .desktop-icons {
+        grid-template-columns: repeat(auto-fill, 60px);
+        gap: 12px;
+    }
+
+    .desktop-icon {
+        width: 60px;
+    }
+
+    .window {
+        min-width: 320px;
+        min-height: 280px;
+    }
+}
+
+/* ========== 滚动条样式 ========== */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* ========== GPU加速辅助类 ========== */
+.gpu-accelerated {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* ========== 窗口动画辅助类 ========== */
+.window-dragging {
+    cursor: grabbing !important;
+    opacity: 0.95;
+}
+
+.window-resizing {
+    opacity: 0.95;
+}
+
+/* 减少动画偏好支持（已禁用：见 config.js window.MACOS_CONFIG.reducedMotion=false） */
+/* @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+} */
+
+/* ================== Spotlight 搜索 ================== */
+.spotlight-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 97000;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 18vh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.spotlight-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.spotlight-box {
+    width: 640px;
+    max-width: 90vw;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(40px) saturate(200%);
+    -webkit-backdrop-filter: blur(40px) saturate(200%);
+    border: 0.5px solid rgba(255, 255, 255, 0.35);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    overflow: hidden;
+    transform: translateY(-8px) scale(0.98);
+    transition: transform 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.spotlight-overlay.show .spotlight-box {
+    transform: translateY(0) scale(1);
+}
+
+.spotlight-input-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border-bottom: 0.5px solid rgba(255, 255, 255, 0.18);
+}
+.spotlight-icon {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.85);
+    flex-shrink: 0;
+}
+#spotlight-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.2px;
+    caret-color: rgba(255, 255, 255, 0.9);
+}
+#spotlight-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+    font-weight: 300;
+}
+
+.spotlight-results {
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 6px 0;
+}
+.spotlight-results::-webkit-scrollbar {
+    width: 6px;
+}
+.spotlight-results::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 3px;
+}
+
+.spotlight-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 18px;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.spotlight-item:hover,
+.spotlight-item.selected {
+    background: rgba(255, 255, 255, 0.18);
+}
+.spotlight-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.15);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+.spotlight-item-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.spotlight-item-text {
+    flex: 1;
+    min-width: 0;
+}
+.spotlight-item-title {
+    font-size: 15px;
+    color: #fff;
+    font-weight: 500;
+}
+.spotlight-item-sub {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.55);
+    margin-top: 2px;
+}
+
+.spotlight-empty {
+    padding: 32px 18px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+}
+
+.spotlight-hint {
+    display: flex;
+    gap: 16px;
+    padding: 10px 18px;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.15);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.55);
+}
+.spotlight-hint kbd {
+    display: inline-block;
+    padding: 1px 6px;
+    margin-right: 4px;
+    background: rgba(255, 255, 255, 0.15);
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 4px;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 10px;
+    line-height: 1;
+}
+/* ================== Launchpad 全屏应用网格 ================== */
+.launchpad-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 96500;
+    background: rgba(28, 28, 32, 0.35);
+    backdrop-filter: blur(50px) saturate(160%);
+    -webkit-backdrop-filter: blur(50px) saturate(160%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10vh 6vw 8vh;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+}
+.launchpad-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.launchpad-search-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 360px;
+    max-width: 80vw;
+    padding: 8px 16px;
+    margin-bottom: 6vh;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.18);
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    transform: translateY(-6px) scale(0.98);
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.launchpad-overlay.show .launchpad-search-row {
+    transform: translateY(0) scale(1);
+}
+.launchpad-search-icon {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    flex-shrink: 0;
+}
+#launchpad-search {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 400;
+    caret-color: rgba(255, 255, 255, 0.9);
+}
+#launchpad-search::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+}
+
+.launchpad-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 18px 14px;
+    width: 100%;
+    max-width: 1100px;
+    overflow-y: auto;
+    padding: 10px 4px 20px;
+    align-content: start;
+}
+.launchpad-grid::-webkit-scrollbar {
+    width: 6px;
+}
+.launchpad-grid::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.launchpad-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 6px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.launchpad-cell:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+.launchpad-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+}
+.launchpad-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.launchpad-icon i {
+    font-size: 34px;
+}
+.launchpad-name {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.92);
+    text-align: center;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+/* ================== 自定义 macOS 风格对话框 ================== */
+.macos-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 98500;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: macosDialogFade 0.15s ease;
+}
+.macos-dialog-overlay.closing {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+@keyframes macosDialogFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.macos-dialog {
+    width: 320px;
+    max-width: 85vw;
+    background: rgba(245, 245, 247, 0.92);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    border: 0.5px solid rgba(255, 255, 255, 0.6);
+    padding: 22px 24px 16px;
+    transform: scale(0.95);
+    animation: macosDialogPop 0.2s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+@keyframes macosDialogPop {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.macos-dialog-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 10px;
+}
+.macos-dialog-message {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    line-height: 1.5;
+    word-break: break-word;
+    margin-bottom: 16px;
+}
+.macos-dialog-input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.9);
+    outline: none;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+.macos-dialog-input:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+.macos-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.macos-dialog-btn {
+    padding: 6px 16px;
+    border-radius: 7px;
+    border: 0.5px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.macos-dialog-btn:hover { background: #f0f0f2; }
+.macos-dialog-btn.primary {
+    background: #007aff;
+    border-color: #007aff;
+    color: #fff;
+}
+.macos-dialog-btn.primary:hover { background: #0a84ff; }
+
+body.dark-mode .macos-dialog {
+    background: rgba(40, 40, 46, 0.92);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode .macos-dialog-title { color: rgba(255, 255, 255, 0.92); }
+body.dark-mode .macos-dialog-message { color: rgba(255, 255, 255, 0.75); }
+body.dark-mode .macos-dialog-input {
+    background: rgba(60, 60, 70, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .macos-dialog-btn {
+    background: rgba(60, 60, 70, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode .macos-dialog-btn:hover { background: rgba(80, 80, 90, 0.8); }
+/* ================== 自定义 macOS 风格对话框 ================== */
+.macos-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 98500;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: macosDialogFade 0.15s ease;
+}
+.macos-dialog-overlay.closing {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+@keyframes macosDialogFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.macos-dialog {
+    width: 320px;
+    max-width: 85vw;
+    background: rgba(245, 245, 247, 0.92);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    border: 0.5px solid rgba(255, 255, 255, 0.6);
+    padding: 22px 24px 16px;
+    transform: scale(0.95);
+    animation: macosDialogPop 0.2s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+@keyframes macosDialogPop {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.macos-dialog-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.9);
+    text-align: center;
+    margin-bottom: 10px;
+}
+.macos-dialog-message {
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.75);
+    text-align: center;
+    line-height: 1.5;
+    word-break: break-word;
+    margin-bottom: 16px;
+}
+.macos-dialog-input {
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 0.5px solid rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    color: rgba(0, 0, 0, 0.9);
+    outline: none;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+.macos-dialog-input:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25);
+}
+.macos-dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.macos-dialog-btn {
+    padding: 6px 16px;
+    border-radius: 7px;
+    border: 0.5px solid rgba(0, 0, 0, 0.15);
+    background: #fff;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.macos-dialog-btn:hover { background: #f0f0f2; }
+.macos-dialog-btn.primary {
+    background: #007aff;
+    border-color: #007aff;
+    color: #fff;
+}
+.macos-dialog-btn.primary:hover { background: #0a84ff; }
+
+body.dark-mode .macos-dialog {
+    background: rgba(40, 40, 46, 0.92);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode .macos-dialog-title { color: rgba(255, 255, 255, 0.92); }
+body.dark-mode .macos-dialog-message { color: rgba(255, 255, 255, 0.75); }
+body.dark-mode .macos-dialog-input {
+    background: rgba(60, 60, 70, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .macos-dialog-btn {
+    background: rgba(60, 60, 70, 0.8);
+    color: rgba(255, 255, 255, 0.9);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+body.dark-mode .macos-dialog-btn:hover { background: rgba(80, 80, 90, 0.8); }
+
+/* ================== 睡眠遮罩 ================== */
+#sleep-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99000;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+#sleep-overlay.active {
+    display: flex;
+    animation: sleepFade 0.4s ease;
+}
+@keyframes sleepFade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.sleep-moon {
+    color: rgba(255, 255, 255, 0.45);
+    font-size: 64px;
+    animation: sleepPulse 3s ease-in-out infinite;
+}
+@keyframes sleepPulse {
+    0%, 100% { opacity: 0.25; }
+    50% { opacity: 0.6; }
+}

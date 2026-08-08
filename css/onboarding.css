@@ -1,0 +1,156 @@
+/* ========== 开机引导 / 登录 浮层（模拟） ========== */
+.auth-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 95000;            /* 高于 Dock(90000) 与所有常驻浮层，低于拖拽/动画遮罩(99999) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 全屏登录界面：不透明壁纸铺满，不再半透明露桌面、不再是小框 */
+    background: linear-gradient(135deg, #4b2c6f 0%, #7b3f8f 38%, #c96f8f 72%, #f0a06a 100%);
+    animation: authFadeIn 0.5s ease-out;
+    color: #fff;
+}
+
+.auth-overlay.auth-hide {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.45s ease;
+}
+
+@keyframes authFadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.auth-card {
+    width: 360px;
+    max-width: 88vw;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+}
+
+.auth-logo {
+    font-size: 44px;
+    color: #fff;
+}
+
+.auth-avatar {
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 600;
+    color: #fff;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.auth-avatar-picker {
+    display: flex;
+    gap: 10px;
+}
+
+.avatar-dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.avatar-dot.selected {
+    border-color: #fff;
+    transform: scale(1.18);
+}
+
+.auth-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.auth-sub {
+    font-size: 13px;
+    opacity: 0.72;
+    margin: -6px 0 6px;
+}
+
+.auth-field {
+    width: 100%;
+}
+
+.auth-field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.auth-field input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.auth-field input:focus {
+    border-color: #007aff;
+    background: rgba(255, 255, 255, 0.16);
+}
+
+.auth-error {
+    color: #ff6b6b;
+    font-size: 12px;
+    min-height: 16px;
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #007aff;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.auth-btn:hover {
+    background: #0a84ff;
+}
+
+.auth-link {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+}
+
+/* 登录卡片全屏化后无独立背景，沿用 overlay 全屏壁纸 */
+
+/* 响应式 */
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 32px 22px;
+    }
+    .auth-title {
+        font-size: 20px;
+    }
+}

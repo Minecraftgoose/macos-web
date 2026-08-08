@@ -1,0 +1,390 @@
+/* dock.css - Glass 毛玻璃风格 */
+.dock-wrapper {
+    position: fixed;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 24px;
+    z-index: 90000;
+    pointer-events: none;
+    justify-content: center;
+}
+
+.dock-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 8px;
+    height: 72px;
+    pointer-events: auto;
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    padding: 8px 12px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 0.5px solid rgba(255, 255, 255, 0.4);
+}
+
+/* 动态面板 */
+.dock-panel-dynamic {
+    height: 72px !important;
+    min-width: 120px;
+    justify-content: center;
+}
+
+.dock-item {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    flex-shrink: 0;
+    overflow: visible;
+    transform-origin: bottom center;
+    /* 无图标容器背景：图标自带圆角与底色，直接落在玻璃面板上 */
+}
+
+/* Launchpad 图标：用真实 webp 图，无容器背景 */
+
+/* 固定项悬浮效果 */
+.dock-item-fixed:hover {
+}
+
+.dock-item-fixed:active {
+}
+
+/* 动态项（运行中的应用） */
+.dock-item-dynamic {
+    animation: dockItemAppear 0.5s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dock-item-dynamic:hover {
+}
+
+
+@keyframes dockItemAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+    60% {
+        opacity: 1;
+        transform: scale(1.1) translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.dock-item-dynamic.removing {
+    animation: dockItemRemove 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+@keyframes dockItemRemove {
+    to {
+        opacity: 0;
+        transform: scale(0.5) translateY(20px);
+    }
+}
+
+/* Dock 图标样式 */
+.dock-icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* 不裁剪圆角：图标（webp）自带圆角，双重裁切会发虚 */
+    overflow: visible;
+}
+
+.dock-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* 不裁剪圆角：图标自带圆角 */
+    pointer-events: none;
+}
+
+.dock-icon i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    font-size: 28px;
+}
+
+/* Dock 标签（tooltip） */
+.dock-label {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 10;
+}
+
+.dock-item:hover .dock-label {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ========== 指示器（已改为紫色） ========== */
+.dock-indicator {
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #a855f7;  /* 紫色主色调 */
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+.dock-indicator.active {
+    opacity: 1;
+    width: 16px;
+    border-radius: 2px;
+    height: 3px;
+}
+
+/* 最小化状态指示器颜色也改为淡紫色，保持整体一致 */
+.dock-item-minimized .dock-indicator {
+    background-color: #c084fc !important;  /* 柔和的紫色 */
+    width: 8px !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+}
+
+.dock-item-minimized {
+    opacity: 0.7;
+}
+
+.dock-item-minimized .dock-icon {
+    filter: grayscale(0.4);
+}
+
+/* 焦点状态（当前活动窗口） */
+.dock-item-active {
+    background: rgba(0, 122, 255, 0.35) !important;
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.6) !important;
+}
+
+/* 分隔线 */
+.dock-divider {
+    position: relative;
+    z-index: 5;
+    width: 1px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.4);
+    margin: 0 4px;
+    align-self: center;
+    flex-shrink: 0;
+    pointer-events: none;
+}
+
+/* 占位符（动态面板为空时显示） */
+.dock-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 120px;
+    height: 56px;
+    color: rgba(0, 0, 0, 0.5);
+    font-size: 12px;
+    text-align: center;
+    font-weight: 500;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+}
+
+.dock-placeholder.hidden {
+    display: none !important;
+}
+
+/* 弹跳动画 */
+.anim-dock-bounce {
+    animation: dockBounce 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes dockBounce {
+    0%, 100% { transform: scale(1) translateY(0); }
+    25% { transform: scale(1.15) translateY(-12px); }
+    50% { transform: scale(1.08) translateY(-6px); }
+    75% { transform: scale(1.02) translateY(-2px); }
+}
+
+/* 右键菜单样式 */
+.dock-context-menu {
+    animation: contextMenuAppear 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes contextMenuAppear {
+    from { 
+        opacity: 0; 
+        transform: scale(0.95) translateY(-10px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+    }
+}
+
+/* ========== 深色模式适配（Glass 风格延续） ========== */
+body.dark-mode .dock-panel {
+    background: rgba(40, 40, 48, 0.25);
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .dock-panel-fixed,
+body.dark-mode .dock-panel-dynamic {
+    background: rgba(40, 40, 48, 0.25);
+}
+
+/* 深色模式同样无图标容器背景 */
+body.dark-mode .dock-item {
+}
+
+body.dark-mode .dock-item-fixed:hover {
+}
+
+body.dark-mode .dock-item-dynamic {
+}
+
+body.dark-mode .dock-item-dynamic:hover {
+}
+
+body.dark-mode .dock-placeholder {
+    background: rgba(40, 40, 48, 0.3);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+body.dark-mode .dock-divider {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+body.dark-mode .dock-label {
+    background: rgba(30, 30, 35, 0.9);
+    color: #f0f0f0;
+}
+
+body.dark-mode .dock-context-menu {
+    background: rgba(40, 40, 48, 0.85);
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #f0f0f0;
+}
+
+/* ========== 响应式适配 ========== */
+@media (max-width: 768px) {
+    .dock-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        bottom: 8px;
+    }
+    
+    .dock-panel {
+        height: 66px;
+        padding: 6px 10px;
+        gap: 6px;
+    }
+    
+    .dock-item {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .dock-icon i {
+        font-size: 24px;
+    }
+    
+    .dock-label {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+    
+    .dock-divider {
+        height: 32px;
+    }
+}
+
+/* ========== 减少动画偏好支持（已禁用：见 config.js） ========== */
+/* @media (prefers-reduced-motion: reduce) {
+    .dock-item, .dock-label, .dock-indicator {
+        transition: none !important;
+        animation: none !important;
+    }
+} */
+/* 动态面板显隐完全由 JS 控制（updatePlaceholder），此处不设 display */
+#dock-panel-dynamic {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+/* ========== 设置联动：自动隐藏 Dock ========== */
+/* body.dock-auto-hide 时，Dock 完全移出屏幕底部，仅留底部热区，悬停热区显示 */
+body.dock-auto-hide .dock-wrapper {
+    transform: translateX(-50%) translateY(calc(100% + 20px));
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    pointer-events: none;
+}
+
+/* 底部热区：屏幕底部 12px 细条，悬停触发 Dock 弹出 */
+body.dock-auto-hide .dock-hotzone {
+    display: block;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    z-index: 90000;
+    pointer-events: auto;
+}
+
+body.dock-auto-hide .dock-hotzone:hover ~ .dock-wrapper,
+body.dock-auto-hide .dock-hotzone:focus ~ .dock-wrapper {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 热区存在时 Dock 本身也允许悬停保持显示 */
+body.dock-auto-hide .dock-wrapper:hover {
+    transform: translateX(-50%) translateY(0);
+}
+
+
+/* ========== 磁吸放大：JS 接管 transform，磁吸时关闭过渡保证跟手 ========== */
+.dock-wrapper.dock-magnifying .dock-item {
+    transition: none !important;
+}
