@@ -37,11 +37,13 @@ function loadAllInstalledAppConfigs() {
     return JSON.parse(localStorage.getItem(INSTALLED_APPS_CONFIG_KEY) || '{}');
 }
 
-function getFaviconUrlFromUrl(url) {
+// favicon.im 图标服务已弃用，图标一律走应用目录的 icon_url 字段（无则显示默认图标）
+// 兜底：icon_url 为空或旧 favicon.im 失效时，用国内可访问的 ico.la4.cn 按域名生成
+function getFaviconFallback(url) {
     if (!url) return null;
     try {
-        const domain = new URL(url).hostname;
-        return `https://favicon.im/${domain}`;
+        const d = new URL(url).hostname;
+        return d ? 'https://ico.la4.cn/ico.php?url=' + d : null;
     } catch(e) { return null; }
 }
 
@@ -144,7 +146,7 @@ async function installApp(appId) {
         window.dynamicIsland?.setProgress(percent, `${percent}%`);
     }
 
-    const favicon = getFaviconUrlFromUrl(appInfo.url);
+    const favicon = appInfo.icon_url || getFaviconFallback(appInfo.url);
     const fullConfig = {
         title: appInfo.name,
         src: appInfo.url,
@@ -219,9 +221,15 @@ function restoreInstalledAppsFromStorage() {
     const allConfigs = loadAllInstalledAppConfigs();
     for (const [appId, config] of Object.entries(allConfigs)) {
         if (!window.appConfig[appId]) {
-            window.appConfig[appId] = { ...config };
-            if (!window.appConfig[appId].iconClass) window.appConfig[appId].iconClass = 'fas fa-globe';
-            if (!window.appConfig[appId].iconColor) window.appConfig[appId].iconColor = '#007aff';
+            const cfg = { ...config };
+            if (!cfg.iconClass) cfg.iconClass = 'fas fa-globe';
+            if (!cfg.iconColor) cfg.iconColor = '#007aff';
+            // 迁移旧 favicon：favicon.im 已退役（加载必失败），或原本为空且是远程应用 → 换 la4 兜底
+            if ((!cfg.favicon || cfg.favicon.indexOf('favicon.im') !== -1) && cfg.src && /^https?:\/\//i.test(cfg.src)) {
+                cfg.favicon = getFaviconFallback(cfg.src);
+                saveInstalledAppConfig(appId, cfg);
+            }
+            window.appConfig[appId] = cfg;
             addDesktopIcon(appId);
         }
     }
@@ -345,7 +353,7 @@ async function installCustomAppFromStore(appData) {
         window.dynamicIsland?.idle();
         window.dynamicIsland?.notify({ title: name, subtitle: '已添加至桌面', duration: 2000 });
 
-        const favicon = providedIconUrl || getFaviconUrlFromUrl(siteUrl);
+        const favicon = providedIconUrl || null;
         window.appConfig[appId] = {
             title: name,
             src: siteUrl,

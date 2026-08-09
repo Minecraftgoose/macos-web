@@ -167,7 +167,7 @@ window.addEventListener('message', (e) => {
                     const account = window.Onboarding?.getAccount?.();
                     result = [
                         `系统名称：macOS 网页版`,
-                        `版本：1.0.24`,
+                        `版本：1.0.25`,
                         `用户：${account?.username || '未登录'}`,
                         `窗口数：${(window.windows || []).length}`
                     ].join('\n');

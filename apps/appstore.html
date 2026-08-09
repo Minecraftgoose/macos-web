@@ -8,27 +8,41 @@
     <style>
         body { background: rgba(0,0,0,0.05); font-family: -apple-system, BlinkMacSystemFont; margin: 0; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
-        h1 { font-size: 28px; margin-bottom: 20px; }
-        .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
-        .app-card { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: transform 0.2s; }
-        .app-card:hover { transform: translateY(-2px); }
-        .app-icon { width: 48px; height: 48px; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
-        .app-icon img { width: 48px; height: 48px; object-fit: contain; }
-        .app-name { font-weight: bold; font-size: 18px; margin-bottom: 6px; }
-        .app-desc { font-size: 13px; color: #666; margin-bottom: 16px; }
-        button { border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer; font-size: 14px; margin-right: 8px; }
-        .install-btn { background: #007aff; color: white; }
-        .open-btn { background: #34c759; color: white; }
-        .uninstall-btn { background: #ff3b30; color: white; }
-        .custom-section { background: rgba(255,255,255,0.95); border-radius: 16px; padding: 16px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        .custom-section h3 { margin-bottom: 12px; }
-        .custom-section input, .custom-section textarea, .custom-section select {
-            width: 100%; padding: 8px; margin-bottom: 8px; border: 1px solid rgba(0,0,0,0.2); border-radius: 8px; font-size: 14px; box-sizing: border-box;
+
+        /* 顶部横幅（参考 Microsoft Store hero） */
+        .store-hero { position: relative; border-radius: 18px; padding: 26px 28px; color: #fff; overflow: hidden; margin-bottom: 24px; background: linear-gradient(120deg, #007aff, #0a84ff 45%, #af52de); box-shadow: 0 8px 24px rgba(0,122,255,0.28); }
+        .store-hero::after { content: ""; position: absolute; right: -60px; top: -60px; width: 220px; height: 220px; border-radius: 50%; background: rgba(255,255,255,0.16); filter: blur(8px); }
+        .store-hero-kicker { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+        .store-hero-title { margin: 6px 0 4px; font-size: 28px; font-weight: 700; line-height: 1.2; }
+        .store-hero-sub { margin: 0; font-size: 14px; opacity: 0.9; }
+
+        /* 左侧分类菜单（参考 Microsoft Store 布局） */
+        .store-layout { display: grid; grid-template-columns: 88px 1fr; gap: 14px; align-items: start; }
+        .store-menu { position: sticky; top: 0; display: flex; flex-direction: column; gap: 4px; background: rgba(255,255,255,0.85); border-radius: 14px; padding: 10px 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+        .store-menu .menu-item { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 10px 4px; border-radius: 10px; cursor: pointer; color: #666; font-size: 11px; text-decoration: none; transition: background-color 150ms, color 150ms; }
+        .store-menu .menu-item:hover { background: rgba(0,0,0,0.05); }
+        .store-menu .menu-item i { font-size: 18px; color: #8e8e93; transition: color 150ms; }
+        .store-menu .menu-item.check { background: rgba(0,122,255,0.12); color: #007aff; }
+        .store-menu .menu-item.check i { color: #007aff; }
+        .store-empty { color: #666; padding: 20px; text-align: center; }
+
+        /* 应用网格与横向卡片（参考 Microsoft Store） */
+        .store-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+        .store-card { display: flex; align-items: center; gap: 14px; background: rgba(255,255,255,0.95); border-radius: 14px; padding: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); transition: background-color 200ms; }
+        .store-card:hover { background: rgba(255,255,255,1); }
+        .store-card-icon { width: 48px; height: 48px; flex: 0 0 48px; border-radius: 10px; overflow: hidden; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.06); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .store-card-icon img { width: 48px; height: 48px; object-fit: contain; }
+        .store-card-info { flex: 1; min-width: 0; }
+        .store-card-name { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .store-card-desc { font-size: 13px; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .store-card-cate { display: inline-block; margin-top: 4px; font-size: 11px; padding: 2px 8px; border-radius: 6px; background: rgba(0,122,255,0.1); color: #007aff; }
+        .store-card-act { display: flex; flex-direction: column; gap: 6px; flex: 0 0 auto; }
+        .store-card-act .get, .store-card-act .open-btn, .store-card-act .uninstall-btn {
+            border: none; padding: 6px 16px; border-radius: 999px; cursor: pointer; font-size: 13px; white-space: nowrap;
         }
-        .custom-section textarea { height: 80px; resize: vertical; }
-        .custom-section button { width: 100%; padding: 10px; background: #007aff; color: white; border: none; border-radius: 20px; font-size: 16px; cursor: pointer; }
-        #customStatus { margin-top: 12px; font-size: 14px; color: #333; }
-        .section-title { font-size: 20px; margin: 24px 0 12px; border-bottom: 1px solid rgba(0,0,0,0.1); padding-bottom: 8px; }
+        .store-card-act .get { background: linear-gradient(120deg, #007aff, #0a84ff); color: #fff; }
+        .store-card-act .open-btn { background: rgba(0,0,0,0.08); color: #1d1d1f; }
+        .store-card-act .uninstall-btn { background: rgba(255,59,48,0.12); color: #ff3b30; }
         .loading { color: #666; padding: 20px; text-align: center; }
     </style>
 <style>
@@ -37,28 +51,20 @@ input, textarea, [contenteditable="true"] { cursor: text; }
 </style>
 </head>
 <body>
-<div class="container">
-    <h1><i class="fab fa-apple"></i> App Store</h1>
-
-    <!-- 自定义软件创建（纯网址模式） -->
-    <div class="custom-section">
-        <h3><i class="fas fa-magic"></i> 创建自定义软件</h3>
-        <input type="text" id="customName" placeholder="应用名称（必填）">
-        <div id="urlFields">
-            <input type="text" id="customUrl" placeholder="输入网页 URL，例如 https://example.com">
-            <div style="font-size:12px; color:#666;">图标将自动获取该网站的 favicon</div>
+<div class="container store-layout">
+    <nav class="store-menu" id="storeMenu">
+        <a class="menu-item check" data-cat="all" title="全部"><i class="fas fa-th-large"></i><span>全部</span></a>
+        <a class="menu-item" data-cat="featured" title="推荐"><i class="fas fa-star"></i><span>推荐</span></a>
+        <a class="menu-item" data-cat="installed" title="已安装"><i class="fas fa-download"></i><span>已装</span></a>
+    </nav>
+    <div class="store-page">
+        <div class="store-hero">
+            <div class="store-hero-kicker"><i class="fab fa-apple"></i> App Store</div>
+            <div class="store-hero-title" id="heroTitle">全部应用</div>
+            <div class="store-hero-sub">应用目录来自 Supabase，随时更新</div>
         </div>
-        <button id="addToStoreBtn"><i class="fas fa-plus"></i> 添加到 App Store</button>
-        <div id="customStatus"></div>
+        <div id="app-list" class="store-grid"><div class="loading">加载中...</div></div>
     </div>
-
-    <!-- 我的自定义应用 -->
-    <div class="section-title"><i class="fas fa-star"></i> 我的自定义应用</div>
-    <div id="custom-apps-list" class="apps-grid"><div class="loading">加载中...</div></div>
-
-    <!-- 推荐应用 -->
-    <div class="section-title"><i class="fas fa-store"></i> 推荐应用</div>
-    <div id="app-list" class="apps-grid"><div class="loading">加载中...</div></div>
 </div>
 
 <script>
@@ -67,158 +73,96 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         window.parent.postMessage({ type: 'appStore', action, payload }, '*');
     }
 
-    // ========== 本地存储：自定义应用 ==========
-    const CUSTOM_APPS_STORE_KEY = 'customAppStoreItems';
-    function getStoredCustomApps() {
-        try { return JSON.parse(localStorage.getItem(CUSTOM_APPS_STORE_KEY) || '[]'); } catch(e) { return []; }
+    // ========== 推荐应用渲染 ==========
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    function domainOf(url) { try { return new URL(url).hostname; } catch(e) { return ''; } }
+
+    // 图标兜底：icon_url 为空时用国内可访问的 ico.la4.cn 自动生成
+    function iconUrlOf(r) {
+        if (r.icon_url) return r.icon_url;
+        var d = domainOf(r.url);
+        return d ? 'https://ico.la4.cn/ico.php?url=' + d : '';
     }
-    function saveCustomApps(apps) {
-        localStorage.setItem(CUSTOM_APPS_STORE_KEY, JSON.stringify(apps));
-    }
 
-    // 添加到 App Store（仅存本地，等待安装）
-    document.getElementById('addToStoreBtn').addEventListener('click', function() {
-        var status = document.getElementById('customStatus');
-        status.textContent = '';
+    // ========== Supabase 应用目录（不再硬编码） ==========
+    const SUPABASE_URL = 'https://lmumcldjujmkudpqdsyx.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxtdW1jbGRqdWpta3VkcHFkc3l4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTQ1OTMsImV4cCI6MjA5MzE3MDU5M30.5_kELeTI_MkD0KI8tE-EgKQAf_-2RsP1QW8mYW601XU';
 
-        var name = document.getElementById('customName').value.trim();
-        if (!name) { status.textContent = '❌ 请输入应用名称'; return; }
+    let APP_CATALOG = {};
+    let CATEGORIES = [];
+    let currentCat = 'all';
 
-        var url = document.getElementById('customUrl').value.trim();
-        if (!url) { status.textContent = '❌ 请输入网址'; return; }
-        if (!/^https?:\/\//i.test(url)) { status.textContent = '❌ 网址需以 http:// 或 https:// 开头'; return; }
-
-        var content = url;
-        var iconUrl = null;
+    async function fetchCatalog() {
         try {
-            var domain = new URL(url).hostname;
-            iconUrl = 'https://favicon.im/' + domain;
-        } catch(e) { iconUrl = null; }
-
-        var newId = 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-        var newApp = {
-            id: newId,
-            name: name,
-            type: 'url',
-            content: content,
-            iconUrl: iconUrl,
-            installed: false,
-            siteUrl: null,
-            deleteToken: null
-        };
-
-        var apps = getStoredCustomApps();
-        apps.push(newApp);
-        saveCustomApps(apps);
-
-        document.getElementById('customName').value = '';
-        document.getElementById('customUrl').value = '';
-
-        status.textContent = '✅ 已添加至「我的自定义应用」，点击"获取"安装到桌面';
-        renderCustomApps();
-    });
-
-    // ========== 渲染自定义应用 ==========
-    function renderCustomApps() {
-        var container = document.getElementById('custom-apps-list');
-        var apps = getStoredCustomApps();
-
-        if (apps.length === 0) {
-            container.innerHTML = '<div style="color:#666; padding:20px;">暂无自定义应用</div>';
-            return;
-        }
-
-        var html = '';
-        apps.forEach(function(app) {
-            var iconHtml = '';
-            if (app.iconUrl) {
-                iconHtml = '<img src="' + app.iconUrl + '" onerror="this.parentElement.innerHTML=\'<i class=\\\'fas fa-globe\\\' style=\\\'font-size:48px;color:#007aff\\\'></i>\'">';
-            } else {
-                iconHtml = '<i class="fas fa-globe" style="font-size:48px; color:#007aff;"></i>';
-            }
-
-            var actionsHtml = '';
-            if (app.installed) {
-                actionsHtml = '<button class="open-btn" data-id="' + app.id + '">打开</button>' +
-                              '<button class="uninstall-btn" data-id="' + app.id + '">卸载</button>';
-            } else {
-                actionsHtml = '<button class="install-btn" data-id="' + app.id + '">获取</button>';
-            }
-
-            html += '<div class="app-card">' +
-                '<div class="app-icon">' + iconHtml + '</div>' +
-                '<div class="app-name">' + escapeHtml(app.name) + '</div>' +
-                '<div class="app-desc">网址模式</div>' +
-                '<div>' + actionsHtml + '</div>' +
-            '</div>';
-        });
-        container.innerHTML = html;
-
-        // 绑定按钮事件（全部通过 postMessage）
-        container.querySelectorAll('.open-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var id = this.dataset.id;
-                // 尝试从本地记录获取站点 URL，若有则直接打开，否则发送 openApp
-                var apps = getStoredCustomApps();
-                var app = apps.find(a => a.id === id);
-                // 已安装/未安装统一走窗口系统打开（iframe 加载网址）
-                sendToParent('openApp', id);
-            });
-        });
-
-        container.querySelectorAll('.uninstall-btn').forEach(function(btn) {
-            btn.addEventListener('click', async function() {
-                var id = this.dataset.id;
-                if (await confirm('确定要卸载吗？将从桌面移除。')) {
-                    sendToParent('uninstall', id);
-                    // 乐观更新本地状态
-                    var apps = getStoredCustomApps();
-                    var app = apps.find(a => a.id === id);
-                    if (app) {
-                        app.installed = false;
-                        app.siteUrl = null;
-                        app.deleteToken = null;
-                        saveCustomApps(apps);
-                    }
-                    setTimeout(renderCustomApps, 500);
+            const res = await fetch(SUPABASE_URL + '/rest/v1/mac_app?select=id,name,url,description,icon_url,category,featured_order&is_published=eq.true&order=sort_order.asc', {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
                 }
             });
-        });
-
-        container.querySelectorAll('.install-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                var id = this.dataset.id;
-                var apps = getStoredCustomApps();
-                var app = apps.find(a => a.id === id);
-                if (!app) return;
-
-                // 发送安装自定义应用请求
-                sendToParent('installCustomApp', app);
-                // 按钮禁用防止重复点击
-                btn.disabled = true;
-                btn.textContent = '安装中...';
-                setTimeout(function() { btn.disabled = false; btn.textContent = '获取'; }, 3000);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const rows = await res.json();
+            APP_CATALOG = {};
+            const catSet = [];
+            (rows || []).forEach(function(r) {
+                APP_CATALOG[r.id] = {
+                    id: r.id,
+                    name: r.name,
+                    url: r.url,
+                    desc: r.description || '',
+                    icon_url: iconUrlOf(r),
+                    cate: r.category || '推荐',
+                    featured: r.featured_order != null ? r.featured_order : null
+                };
+                const c = r.category || '推荐';
+                if (catSet.indexOf(c) === -1) catSet.push(c);
             });
+            CATEGORIES = catSet;
+            // 向父窗口注册目录
+            sendToParent('registerApps', APP_CATALOG);
+            renderMenu();
+            renderRecommended();
+        } catch (err) {
+            var list = document.getElementById('app-list');
+            if (list) list.innerHTML = '<div style="color:#ff3b30; padding:20px;">商店目录加载失败：' + escapeHtml(err.message || String(err)) + '</div>';
+        }
+    }
+
+    // ========== 分类菜单 ==========
+    function catIcon(cat) {
+        var m = { '推荐': 'fa-star', '工具': 'fa-wrench', '游戏': 'fa-gamepad', '社交': 'fa-comments', '娱乐': 'fa-film', '购物': 'fa-shopping-cart', '教育': 'fa-graduation-cap', '新闻': 'fa-newspaper' };
+        return m[cat] || 'fa-tag';
+    }
+
+    function renderMenu() {
+        var menu = document.getElementById('storeMenu');
+        if (!menu) return;
+        // 动态分类插到"已装"前面；"推荐"是精选位（featured_order），不作为分类
+        var anchor = menu.querySelector('[data-cat="installed"]');
+        CATEGORIES.forEach(function(cat) {
+            if (cat === '推荐') return;
+            var a = document.createElement('a');
+            a.className = 'menu-item';
+            a.dataset.cat = cat;
+            a.title = cat;
+            a.innerHTML = '<i class="fas ' + catIcon(cat) + '"></i><span>' + escapeHtml(cat) + '</span>';
+            menu.insertBefore(a, anchor);
+        });
+        menu.querySelectorAll('.menu-item').forEach(function(item) {
+            item.addEventListener('click', function() { switchCat(this.dataset.cat); });
         });
     }
 
-    // ========== 推荐应用渲染 ==========
-    function getDomain(url) { try { return new URL(url).hostname; } catch(e) { return ''; } }
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m) { if (m === '&') return '&amp;'; if (m === '<') return '&lt;'; if (m === '>') return '&gt;'; return m; }); }
+    function switchCat(cat) {
+        currentCat = cat;
+        document.querySelectorAll('#storeMenu .menu-item').forEach(function(m) {
+            m.classList.toggle('check', m.dataset.cat === cat);
+        });
+        var titles = { all: '全部应用', featured: '推荐', installed: '已安装' };
+        document.getElementById('heroTitle').textContent = titles[cat] || cat;
+        renderRecommended();
+    }
 
-    const APP_CATALOG = {
-        baidu: { id: 'baidu', name: '百度', url: 'https://www.baidu.com', desc: '百度搜索' },
-        bilibili: { id: 'bilibili', name: 'B站', url: 'https://www.bilibili.com', desc: '哔哩哔哩弹幕网' },
-        github: { id: 'github', name: 'GitHub', url: 'https://github.com', desc: '全球开发者社区' },
-        youtube: { id: 'youtube', name: 'YouTube', url: 'https://www.youtube.com', desc: '视频分享平台' },
-        taobao: { id: 'taobao', name: '淘宝', url: 'https://www.taobao.com', desc: '购物' },
-        jd: { id: 'jd', name: '京东', url: 'https://www.jd.com', desc: '正品好货' },
-        weibo: { id: 'weibo', name: '微博', url: 'https://weibo.com', desc: '随时随地发现新鲜事' },
-        zhihu: { id: 'zhihu', name: '知乎', url: 'https://www.zhihu.com', desc: '有问题，上知乎' }
-    };
-
-    // 向父窗口注册目录
-    sendToParent('registerApps', APP_CATALOG);
     // 请求已安装列表
     sendToParent('getInstalledApps');
 
@@ -227,25 +171,41 @@ input, textarea, [contenteditable="true"] { cursor: text; }
     function renderRecommended() {
         var container = document.getElementById('app-list');
         if (!container) return;
+        var ids = Object.keys(APP_CATALOG).filter(function(id) {
+            var app = APP_CATALOG[id];
+            if (currentCat === 'all') return true;
+            if (currentCat === 'installed') return installedApps.includes(id);
+            if (currentCat === 'featured') return app.featured != null;
+            return (app.cate || '推荐') === currentCat;
+        });
+        if (currentCat === 'featured') {
+            ids.sort(function(a, b) { return (APP_CATALOG[a].featured || 0) - (APP_CATALOG[b].featured || 0); });
+        }
+        if (ids.length === 0) {
+            container.innerHTML = '<div class="store-empty">' + (currentCat === 'installed' ? '还没有安装任何应用，去「全部」里挑一个吧' : '该分类下暂无应用') + '</div>';
+            return;
+        }
         var html = '';
-        for (var id in APP_CATALOG) {
+        ids.forEach(function(id) {
             var app = APP_CATALOG[id];
             var isInstalled = installedApps.includes(id);
-            var domain = getDomain(app.url);
-            var faviconUrl = domain ? 'https://favicon.im/' + domain : '';
-            html += '<div class="app-card">' +
-                '<div class="app-icon">' + (faviconUrl ? '<img src="' + faviconUrl + '" onerror="this.onerror=null; this.parentElement.innerHTML=\'<i class=\\\'fas fa-globe\\\' style=\\\'font-size:48px;color:#007aff\\\'></i>\'">' : '<i class="fas fa-globe" style="font-size:48px;color:#007aff"></i>') + '</div>' +
-                '<div class="app-name">' + escapeHtml(app.name) + '</div>' +
-                '<div class="app-desc">' + escapeHtml(app.desc) + '</div>' +
-                '<div>' + (isInstalled ?
+            var iconUrl = app.icon_url || '';
+            html += '<div class="store-card">' +
+                '<div class="store-card-icon">' + (iconUrl ? '<img src="' + iconUrl + '" onerror="this.onerror=null; this.parentElement.innerHTML=\'<i class=\\\'fas fa-globe\\\' style=\\\'font-size:48px;color:#007aff\\\'></i>\'">' : '<i class="fas fa-globe" style="font-size:48px;color:#007aff"></i>') + '</div>' +
+                '<div class="store-card-info">' +
+                    '<div class="store-card-name">' + escapeHtml(app.name) + '</div>' +
+                    '<div class="store-card-desc">' + escapeHtml(app.desc) + '</div>' +
+                    '<span class="store-card-cate">' + escapeHtml(app.cate || '推荐') + '</span>' +
+                '</div>' +
+                '<div class="store-card-act">' + (isInstalled ?
                     '<button class="open-btn" data-id="' + id + '">打开</button><button class="uninstall-btn" data-id="' + id + '">移除</button>' :
-                    '<button class="install-btn" data-id="' + id + '">获取</button>') +
+                    '<button class="get" data-id="' + id + '">获取</button>') +
                 '</div></div>';
-        }
+        });
         container.innerHTML = html;
 
         // 绑定事件（全部 postMessage）
-        container.querySelectorAll('.install-btn').forEach(btn => {
+        container.querySelectorAll('.get').forEach(btn => {
             btn.addEventListener('click', function() {
                 var id = this.dataset.id;
                 sendToParent('install', id);
@@ -274,37 +234,12 @@ input, textarea, [contenteditable="true"] { cursor: text; }
     window.addEventListener('message', function(e) {
         if (e.data.type === 'appStore' && e.data.action === 'installedList') {
             installedApps = e.data.apps || [];
-            // 同时更新自定义应用的 installed 状态（根据 appConfig 中的 id 是否在 installedApps 中）
-            var apps = getStoredCustomApps();
-            apps.forEach(function(app) {
-                app.installed = installedApps.includes(app.id);
-            });
-            saveCustomApps(apps);
             renderRecommended();
-            renderCustomApps();
-        } else if (e.data.type === 'appStore' && e.data.action === 'customAppInstalled') {
-            // 自定义应用安装完成回调
-            var result = e.data.data;
-            if (e.data.success && result) {
-                var apps = getStoredCustomApps();
-                var app = apps.find(a => a.id === result.appId);
-                if (app) {
-                    app.installed = true;
-                    app.siteUrl = result.siteUrl;
-                    saveCustomApps(apps);
-                }
-                // 重新请求已安装列表以同步
-                sendToParent('getInstalledApps');
-            } else {
-                alert('自定义应用安装失败：' + (e.data.error || '未知错误'));
-            }
-            renderCustomApps();
         }
     });
 
-    // 初次渲染
-    renderRecommended();
-    renderCustomApps();
+    // 初次渲染（目录从 Supabase 异步拉取）
+    fetchCatalog();
 </script>
 <script>
 (function(){

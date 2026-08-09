@@ -1,7 +1,7 @@
 # macOS 网页版
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.0.24-blue" alt="version">
+  <img src="https://img.shields.io/badge/version-1.0.25-blue" alt="version">
   <img src="https://img.shields.io/badge/license-Apache%202.0-blue.svg" alt="license">
   <img src="https://img.shields.io/badge/platform-Web%20Browser-lightgrey" alt="platform">
   <img src="https://img.shields.io/badge/deploy-Cloudflare%20Pages-orange" alt="deploy">

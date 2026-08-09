@@ -244,7 +244,7 @@ function enterDesktop() {
     initDesktopIcons();
     initScreenTimeTracker();
     restoreLastApps();
-    console.log('macOS 网页版 v1.0.24');
+    console.log('macOS 网页版 v1.0.25');
 }
 
 // DOM 加载完成初始化

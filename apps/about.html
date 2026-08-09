@@ -522,7 +522,24 @@ input, textarea, [contenteditable="true"] { cursor: text; }
 
             <!-- 更新历史 - 默认折叠，点击展开 -->
             <div class="content-section" id="history">
-                <div class="timeline">
+                    <div class="timeline">
+                    <!-- ===== v1.0.25（今天） ===== -->
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-date">2026/8/9</span>
+                            <span class="timeline-version">v1.0.25 <i class="fas fa-chevron-down toggle-icon"></i></span>
+                        </div>
+                        <div class="timeline-content">
+                            <ul>
+                                <li>App Store 后端化：应用目录接入 Supabase（mac_app 表），不再硬编码、可远程维护</li>
+                                <li>App Store UI 升级为微软商店风格，新增分类导航与「推荐」精选位</li>
+                                <li>图标改用 ico.la4.cn 按域名生成，移除失效的 favicon.im 服务</li>
+                                <li>新增开发者平台（macos-dev）：应用提交 → 审核 → 自动上架全流程</li>
+                                <li>开放状态查询 API，支持与第三方项目联动查看上架/审核状态</li>
+                            </ul>
+                        </div>
+                    </div>
+
                     <!-- ===== v1.0.24（今天） ===== -->
                     <div class="timeline-item">
                         <div class="timeline-header">
