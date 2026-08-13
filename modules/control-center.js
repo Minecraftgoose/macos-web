@@ -1,4 +1,4 @@
-﻿// ========== 控制中心 ==========
+
 (function() {
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', buildControlCenter);

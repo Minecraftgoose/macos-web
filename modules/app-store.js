@@ -1,11 +1,11 @@
-// ========== 应用商店与动态安装 ==========
+
 const INSTALLED_APPS_KEY = 'installedApps';
 const INSTALLED_APPS_CONFIG_KEY = 'installedAppsConfig';
 let availableApps = {};
 
 const BUILTIN_APPS = [
     'finder', 'safari', 'calendar', 'photos', 'settings',
-    'weather', 'yd', 'about', 'quest', 'xn', 'text', 'appstore'
+    'weather', 'yd', 'about', 'quest', 'xn', 'text', 'appstore', 'map'
 ];
 
 function getCurrentInstalledIds() {
@@ -38,12 +38,12 @@ function loadAllInstalledAppConfigs() {
 }
 
 // favicon.im 图标服务已弃用，图标一律走应用目录的 icon_url 字段（无则显示默认图标）
-// 兜底：icon_url 为空或旧 favicon.im 失效时，用国内可访问的 ico.la4.cn 按域名生成
+
 function getFaviconFallback(url) {
     if (!url) return null;
     try {
         const d = new URL(url).hostname;
-        return d ? 'https://ico.la4.cn/ico.php?url=' + d : null;
+        return d ? 'https://favicon.cyann.top/?url=' + d : null;
     } catch(e) { return null; }
 }
 
@@ -107,7 +107,6 @@ function registerAvailableApps(catalog) {
     console.log('[AppStore] 已注册应用目录:', Object.keys(availableApps));
 }
 
-// ========== 安装函数（增加即时反馈） ==========
 async function installApp(appId) {
     console.log('[AppStore] 尝试安装:', appId, '当前目录:', Object.keys(availableApps));
     
@@ -131,8 +130,9 @@ async function installApp(appId) {
         duration: 1500 
     });
 
-    // 显示进度
+    // 显示进度（小卡片）
     window.dynamicIsland?.progress({
+        cardSize: 'small',
         title: `正在下载 ${appInfo.name}`,
         subtitle: '0%',
         progress: 0,
@@ -224,7 +224,7 @@ function restoreInstalledAppsFromStorage() {
             const cfg = { ...config };
             if (!cfg.iconClass) cfg.iconClass = 'fas fa-globe';
             if (!cfg.iconColor) cfg.iconColor = '#007aff';
-            // 迁移旧 favicon：favicon.im 已退役（加载必失败），或原本为空且是远程应用 → 换 la4 兜底
+
             if ((!cfg.favicon || cfg.favicon.indexOf('favicon.im') !== -1) && cfg.src && /^https?:\/\//i.test(cfg.src)) {
                 cfg.favicon = getFaviconFallback(cfg.src);
                 saveInstalledAppConfig(appId, cfg);
@@ -237,7 +237,6 @@ function restoreInstalledAppsFromStorage() {
     notifyAppStoreWindows();
 }
 
-// ---------- 并发锁 ----------
 const pendingOpenApps = new Set();
 
 async function enhancedOpenApp(appName, options = {}) {
@@ -317,7 +316,6 @@ async function enhancedOpenApp(appName, options = {}) {
     }
 }
 
-// ---------- 自定义应用安装（纯网址模式，不依赖 freekit 托管） ----------
 async function installCustomAppFromStore(appData) {
     const { name, content, iconUrl: providedIconUrl, id: customId } = appData;
     const appId = customId || `custom_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
@@ -325,6 +323,7 @@ async function installCustomAppFromStore(appData) {
     if (!content) throw new Error('缺少网址');
 
     window.dynamicIsland?.progress({
+        cardSize: 'small',
         title: `正在安装 ${name}`,
         subtitle: '0%',
         progress: 0,
@@ -378,7 +377,6 @@ async function installCustomAppFromStore(appData) {
     }
 }
 
-// ---------- 挂载全局 ----------
 function setupGlobalAppFunctions() {
     window.enhancedOpenApp = enhancedOpenApp;
     if (typeof window.openApp !== 'function' || window.openApp.name !== 'enhancedOpenApp') {

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/fonts.css">
 <title>终端</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -93,8 +94,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
     let reqSeq = 0;
     const pending = new Map();
 
-    // ========== 输出 ==========
-    function print(text, cls) {
+function print(text, cls) {
         const div = document.createElement('div');
         div.className = 'line' + (cls ? ' ' + cls : '');
         div.textContent = text;
@@ -104,8 +104,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
     function scrollBottom() { body.scrollTop = body.scrollHeight; }
     function ensureFocus() { if (inputEl && document.activeElement !== inputEl) inputEl.focus(); }
 
-    // ========== 与父窗口通信 ==========
-    function call(command, payload) {
+function call(command, payload) {
         return new Promise((resolve) => {
             const reqId = ++reqSeq;
             pending.set(reqId, resolve);
@@ -124,8 +123,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         if (res) { pending.delete(d.reqId); res({ ok: d.ok, data: d.data }); }
     });
 
-    // ========== 命令 ==========
-    const commands = {
+const commands = {
         help() {
             return [
                 '可用命令：',
@@ -201,8 +199,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         }
     };
 
-    // ========== 输入行（真实 input） ==========
-    function createPromptRow() {
+function createPromptRow() {
         const row = document.createElement('div');
         row.className = 'line input-row';
         row.innerHTML = '<span class="prompt-prefix">' + USER + '</span>' +
@@ -261,8 +258,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         }
     }
 
-    // ========== 事件 ==========
-    body.addEventListener('click', (e) => {
+body.addEventListener('click', (e) => {
         if (e.target !== inputEl) focusInput();
     });
 
@@ -291,8 +287,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         }
     });
 
-    // ========== 初始化 ==========
-    function init() {
+function init() {
         print('Last login: ' + new Date().toLocaleString('zh-CN'), 'out-dim');
         print('欢迎使用 macOS 网页版终端。输入 help 查看可用命令。', 'out-info');
         promptRow = createPromptRow();

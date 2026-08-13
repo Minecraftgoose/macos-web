@@ -1,4 +1,4 @@
-// ========== 系统偏好管理（设置 App 与系统状态联动，统一走 localStorage） ==========
+
 // 偏好存储：localStorage['macos_prefs']，同源 iframe 共享同一份数据。
 // 同步机制：任何窗口写入 localStorage 后，其他窗口收到 storage 事件自动同步。
 // 不再使用 postMessage 传递偏好（iframe 内部应用通信除外）。
@@ -23,7 +23,6 @@ function setPref(key, value) {
 }
 window.MacOSPrefs = loadPrefs();
 
-// ========== 应用偏好到系统状态（可重复调用） ==========
 function applyPrefs() {
     // 深色模式
     const dark = getPref('darkMode', false);
@@ -33,8 +32,9 @@ function applyPrefs() {
     const iconsVisible = getPref('showDesktopIcons', true);
     const iconsDiv = document.querySelector('.desktop-icons');
     if (iconsDiv) iconsDiv.style.display = iconsVisible ? 'grid' : 'none';
-    // Dock 自动隐藏
-    const autoHide = getPref('autoHideDock', false);
+    // Dock 自动隐藏：设置开启 或 有窗口处于全屏且未最小化时隐藏（全屏复用同一隐藏逻辑）
+
+    const autoHide = getPref('autoHideDock', false) || !!(window.windows && window.windows.some(w => w.isFullscreen && !w.minimized));
     document.body.classList.toggle('dock-auto-hide', autoHide);
     syncDockHotzone(autoHide);
     // 同步已打开的设置/关于窗口（iframe 内部样式由它们自己的 storage 监听处理，
@@ -85,7 +85,6 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-// ========== 跨窗口消息处理（仅保留 iframe 应用通信，不承载偏好） ==========
 window.addEventListener('message', (e) => {
     const data = e.data;
     if (!data) return;

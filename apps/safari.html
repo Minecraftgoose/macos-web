@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/fonts.css">
     <title>新标签页</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -13,7 +14,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: 'PingFang SC', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             height: 100vh;
             overflow: hidden;
             background: #000;
@@ -77,7 +78,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             font-size: 13px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
             max-width: 200px;
@@ -137,7 +138,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
             font-size: 20px;
             color: rgba(255, 255, 255, 0.8);
@@ -161,7 +162,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
             color: rgba(255, 255, 255, 0.8);
             position: relative;
@@ -215,7 +216,7 @@
             text-align: center;
             margin-bottom: 60px;
             animation: fadeInUp 0.8s ease;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: transform 0.3s;
         }
 
@@ -303,7 +304,7 @@
             padding: 8px 14px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             font-size: 14px;
             transition: all 0.3s;
             position: relative;
@@ -341,7 +342,7 @@
         .engine-option {
             padding: 12px;
             border-radius: 10px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -404,7 +405,7 @@
             gap: 12px;
             padding: 12px;
             border-radius: 12px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.2s;
         }
 
@@ -487,7 +488,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
             color: rgba(255, 255, 255, 0.8);
             background: rgba(255, 255, 255, 0.1);
@@ -535,7 +536,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
             color: rgba(255, 255, 255, 0.8);
             background: rgba(255, 255, 255, 0.1);
@@ -617,7 +618,7 @@
         .bg-option {
             aspect-ratio: 16/10;
             border-radius: 12px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             border: 2px solid transparent;
             transition: all 0.3s;
             overflow: hidden;
@@ -645,7 +646,7 @@
             padding: 14px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 14px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
         }
 
@@ -706,7 +707,7 @@
         .changelog-toggle {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.6);
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: all 0.3s;
             display: flex;
             align-items: center;
@@ -1164,9 +1165,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         setInterval(updateClock, 1000);
         updateClock();
 
-        // ==================== 搜索功能 ====================
-        
-        const centerSearchInput = document.getElementById('centerSearchInput');
+const centerSearchInput = document.getElementById('centerSearchInput');
         const browserAddressInput = document.getElementById('browserAddressInput');
         const historyDropdown = document.getElementById('historyDropdown');
         
@@ -1299,9 +1298,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             performSearchOrNavigate(query);
         }
 
-        // ==================== 浏览器导航 ====================
-        
-        function goBack() {
+function goBack() {
             const tab = tabs.find(t => t.id === currentTabId);
             if (tab && tab.historyIndex > 0) {
                 tab.historyIndex--;
@@ -1340,9 +1337,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             }
         }
 
-        // ==================== 标签页管理 ====================
-        
-        function newTab() {
+function newTab() {
             const newTabId = tabCounter++;
             const newTab = { 
                 id: newTabId, 
@@ -1418,9 +1413,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             }
         }
 
-        // ==================== 搜索引擎切换 ====================
-        
-        function toggleEngine(e) {
+function toggleEngine(e) {
             e.stopPropagation();
             document.getElementById('engineDropdown').classList.toggle('show');
         }
@@ -1434,9 +1427,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             document.getElementById('engineDropdown').classList.remove('show');
         }
 
-        // ==================== 设置功能 ====================
-        
-        function toggleSettings() {
+function toggleSettings() {
             document.getElementById('settingsPanel').classList.toggle('show');
         }
 
@@ -1461,9 +1452,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             localStorage.setItem('is24Hour', is24Hour);
         }
 
-        // ==================== 更新日志功能 ====================
-        
-        function toggleChangelog() {
+function toggleChangelog() {
             const content = document.getElementById('changelogContent');
             const toggle = document.getElementById('changelogToggle');
             const isShowing = content.classList.contains('show');
@@ -1496,9 +1485,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             `).join('');
         }
 
-        // ==================== 其他功能 ====================
-        
-        function toggleFullscreen() {
+function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
             } else {
@@ -1510,9 +1497,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             document.body.classList.toggle('fullscreen-clock');
         }
 
-        // ==================== 全局事件处理 ====================
-        
-        document.addEventListener('click', (e) => {
+document.addEventListener('click', (e) => {
             if (!e.target.closest('.settings-panel') && !e.target.closest('.top-btn')) {
                 document.getElementById('settingsPanel').classList.remove('show');
             }
@@ -1557,9 +1542,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             }
         });
 
-        // ==================== 初始化 ====================
-        
-        window.onload = () => {
+window.onload = () => {
             const bgIndex = localStorage.getItem('bgIndex') || 0;
             if (bgIndex > 0) {
                 document.getElementById('bg').style.backgroundImage = `url(${backgrounds[bgIndex]})`;

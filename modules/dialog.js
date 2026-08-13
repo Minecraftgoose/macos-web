@@ -1,4 +1,4 @@
-// ========== dialog.js - 自定义 macOS 风格对话框（alert / confirm / prompt） ==========
+
 // 主窗口模块：覆盖原生 alert，提供 MacOSDialog API，并转发 iframe 的对话框请求。
 (function() {
     'use strict';
@@ -97,15 +97,14 @@
     };
 
     // 覆盖原生 alert（同步 API 无法异步，这里仅主窗口同页调用；confirm/prompt 请用 MacOSDialog）
-    // 注意：覆盖 alert 返回 undefined，与原语义一致
+
     window.alert = (msg) => {
         MacOSDialog.alert({ message: msg });
     };
 
     window.MacOSDialog = MacOSDialog;
 
-    // ========== iframe 对话框转发 ==========
-    window.addEventListener('message', (e) => {
+window.addEventListener('message', (e) => {
         const d = e.data;
         if (!d || d.type !== 'macosDialog') return;
         const { reqId, op, payload } = d;

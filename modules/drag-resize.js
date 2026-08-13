@@ -1,4 +1,4 @@
-// ========== 拖拽与缩放 ==========
+
 let dragState = {
     active: false, target: null, startX: 0, startY: 0, startLeft: 0, startTop: 0
 };
@@ -35,7 +35,7 @@ function onGlobalMove(clientX, clientY) {
             newHeight = resizeState.startHeight - dy;
             newTop = resizeState.startTop + (resizeState.startHeight - newHeight);
         }
-        const bounded = applyResizeBoundaries(resizeState.target, newLeft, newTop, newWidth, newHeight);
+        const bounded = applyResizeBoundaries(resizeState.target, newLeft, newTop, newWidth, newHeight, dir);
         resizeState.target.style.left = bounded.left + 'px';
         resizeState.target.style.top = bounded.top + 'px';
         resizeState.target.style.width = bounded.width + 'px';
@@ -57,6 +57,7 @@ function onGlobalUp() {
         if (win && window.AnimationManager) window.AnimationManager.animateResizeEnd(win);
         else if (win) win.classList.remove('window-resizing');
         if (win && win.__winObj) notifyResize(win.__winObj);
+        win.classList.remove('resizing-nw', 'resizing-ne', 'resizing-sw', 'resizing-se', 'resizing-n', 'resizing-s', 'resizing-w', 'resizing-e');
         resizeState.target = null;
     }
 }

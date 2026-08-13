@@ -5,7 +5,7 @@
   right: 16px;          
   width: 380px;
   max-width: calc(100vw - 32px);
-  /* 背景改为高度透明（原 0.92 → 0.2），保留模糊效果以达到通透毛玻璃 */
+
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);

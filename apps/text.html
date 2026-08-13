@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/fonts.css">
     <title>灵动岛功能测试</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh;
             color: #fff;
@@ -74,7 +75,7 @@
             padding: 14px 18px;
             border-radius: 14px;
             border: none;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             font-size: 14px;
             font-weight: 500;
             color: #fff;
@@ -384,7 +385,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
 
     <script src="../modules/island-api.js"></script>
     <script>
-        // ========== 日志系统 ==========
+
         const logPanel = document.getElementById('log-panel');
         let logs = [];
 
@@ -427,8 +428,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             });
         }
 
-        // ========== 连接状态检测 ==========
-        function checkConnection() {
+function checkConnection() {
             const isIframe = window.parent !== window;
             const badge = document.getElementById('conn-status');
             const text = document.getElementById('conn-text');
@@ -443,8 +443,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             }
         }
 
-        // ========== 通知测试 ==========
-        function testNotify(type) {
+function testNotify(type) {
             const configs = {
                 success: {
                     title: '操作成功',
@@ -495,8 +494,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             log(`发送通知: ${cfg.title}`, 'notify', cfg);
         }
 
-        // ========== 状态测试 ==========
-        function testStatus(type) {
+function testStatus(type) {
             const configs = {
                 vpn: {
                     title: 'VPN 已连接',
@@ -535,8 +533,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             log(`发送状态: ${cfg.title}`, 'status', cfg);
         }
 
-        // ========== 进度条测试 ==========
-        let progressInterval = null;
+let progressInterval = null;
         let currentProgress = 0;
 
         function testProgress(type) {
@@ -600,8 +597,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             }
         }
 
-        // ========== 自定义测试 ==========
-        function testCustom() {
+function testCustom() {
             const mode = document.getElementById('custom-mode').value;
             const title = document.getElementById('custom-title').value || '自定义标题';
             const subtitle = document.getElementById('custom-subtitle').value;
@@ -627,8 +623,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             log(`自定义 ${mode}: ${title}`, mode, payload);
         }
 
-        // ========== 初始化 ==========
-        window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', () => {
             checkConnection();
             log('测试页面已加载，准备就绪', 'success');
         });

@@ -1,4 +1,4 @@
-/* ========== 灵动岛 ========== */
+
 .dynamic-island {
     position: fixed;
     top: 8px;
@@ -14,13 +14,13 @@
     justify-content: center;
     padding: 0 12px;
     gap: 8px;
-    cursor: pointer;
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
     z-index: 10001;
     overflow: hidden;
     transition: all 0.55s cubic-bezier(0.32, 0.72, 0, 1);
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
     border: 0.5px solid rgba(255, 255, 255, 0.15);
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
 }
 
 /* 展开状态 */
@@ -134,7 +134,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
     background: rgba(255,255,255,0.12);
     border: none;
     color: white;
@@ -168,7 +168,6 @@
     background: rgba(255,255,255,0.1);
 }
 
-/* ========== 空闲状态 - 纯黑色背景，不引用外部图片 ========== */
 .island-idle {
     position: relative;
     width: 100%;

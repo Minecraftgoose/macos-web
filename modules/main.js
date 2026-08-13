@@ -1,8 +1,6 @@
-// ========== main.js - 主入口（系统初始化） ==========
-// 依赖顺序：config, utils, drag-resize, window-core, app-store, message
-// 说明：应用配置 appConfig 已拆至 modules/config.js
 
-// ========== 桌面壁纸：优先用设置页上传的自定义壁纸，否则回退 Sonoma 风格渐变（零下载） ==========
+// 依赖顺序：config, utils, drag-resize, window-core, app-store, message
+
 const WALLPAPER_FALLBACK = 'linear-gradient(135deg, #4b2c6f 0%, #7b3f8f 38%, #c96f8f 72%, #f0a06a 100%)';
 function applyWallpaper() {
     const desktop = document.querySelector('.desktop');
@@ -119,8 +117,7 @@ function initMenuBar() {
         });
     })();
 
-    // ========== 其余菜单项绑定 ==========
-    document.querySelectorAll('.menu-item').forEach(menu => {
+document.querySelectorAll('.menu-item').forEach(menu => {
         const title = menu.querySelector('.menu-title');
         if (!title) return;
         const items = menu.querySelectorAll('.submenu li a');
@@ -204,7 +201,6 @@ function updateTime() {
     if (timeElement) timeElement.textContent = timeStr;
 }
 
-// ========== 屏幕使用时间统计（本地累计，分钟级） ==========
 function initScreenTimeTracker() {
     const prefs = window.MacOSPrefs || {};
     if (!prefs.screenTime) return;
@@ -216,7 +212,6 @@ function initScreenTimeTracker() {
     }, 60000);
 }
 
-// ========== 启动时恢复上次打开的窗口（设置偏好） ==========
 async function restoreLastApps() {
     const prefs = window.MacOSPrefs || {};
     if (!prefs.autoOpenWindows) return;
@@ -273,7 +268,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     enterDesktop();
 });
 
-// ========== 挂载全局 API ==========
 setTimeout(() => {
     if (typeof window.enhancedOpenApp === 'function') {
         window.openApp = window.enhancedOpenApp;

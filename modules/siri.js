@@ -21,9 +21,8 @@
     let siriTrigger = document.getElementById('siri-trigger');
     let siriInput = document.getElementById('siri-panel-input');
     let chatContainer = document.getElementById('siri-chat-container');
-    
-    // ========== 动态获取可用应用列表 ==========
-    function getAvailableApps() {
+
+function getAvailableApps() {
         const apps = new Set();
         // 从 Dock 中收集
         document.querySelectorAll('.dock-item[data-app]').forEach(el => {
@@ -37,9 +36,8 @@
         });
         return Array.from(apps);
     }
-    
-    // ========== 俏皮活泼的 System Prompt ==========
-    const AGENT_SYSTEM_PROMPT = `你是 Siri，macOS 内置的智能助手。你性格活泼、有趣，但始终专业。你的回答要简短、亲切。
+
+const AGENT_SYSTEM_PROMPT = `你是 Siri，macOS 内置的智能助手。你性格活泼、有趣，但始终专业。你的回答要简短、亲切。
 
 **说话风格**：
 - 像好朋友一样自然，偶尔用“哇”、“嘿”、“好啦”、“搞定”等轻快的词。
@@ -57,9 +55,8 @@ openApp, closeWindow, minimizeWindow, restoreWindow, setDarkMode, setBrightness,
 开始帮助用户。`;
     
     const NORMAL_SYSTEM_PROMPT = `你是 Siri，苹果智能助手。用简洁、友好、略带俏皮的中文回答。避免markdown。`;
-    
-    // ========== 定义 tools（去掉 openApp 的 enum 硬编码） ==========
-    const AGENT_TOOLS = [
+
+const AGENT_TOOLS = [
         { type: 'function', function: { name: 'openApp', description: '打开应用，应用名称请使用英文小写，例如 finder, safari, calendar, settings, weather, yd, about, quest, text 等', parameters: { type: 'object', properties: { appName: { type: 'string', description: '应用名称（英文小写）' } }, required: ['appName'] } } },
         { type: 'function', function: { name: 'closeWindow', description: '关闭窗口', parameters: { type: 'object', properties: { appName: { type: 'string' } } } } },
         { type: 'function', function: { name: 'minimizeWindow', description: '最小化窗口', parameters: { type: 'object', properties: { appName: { type: 'string' } } } } },
@@ -74,9 +71,8 @@ openApp, closeWindow, minimizeWindow, restoreWindow, setDarkMode, setBrightness,
         { type: 'function', function: { name: 'showStatus', description: '显示持续状态', parameters: { type: 'object', properties: { title: { type: 'string' }, subtitle: { type: 'string' } }, required: ['title'] } } },
         { type: 'function', function: { name: 'hideIsland', description: '隐藏灵动岛内容', parameters: { type: 'object', properties: {} } } },
     ];
-    
-    // ========== 辅助函数 ==========
-    function updatePanelPosition() {
+
+function updatePanelPosition() {
         if (!siriTrigger || !siriPanel) return;
         const rect = siriTrigger.getBoundingClientRect();
         siriPanel.style.top = `${rect.bottom + 6}px`;

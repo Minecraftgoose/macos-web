@@ -1,4 +1,4 @@
-/* ========== 开机动画 - 苹果 Logo + 进度条 ========== */
+
 .boot-screen {
     position: fixed;
     top: 0;
@@ -77,7 +77,6 @@
     100% { width: 100%; }
 }
 
-/* 提示文字（可选） */
 .boot-hint {
     color: rgba(255, 255, 255, 0.3);
     font-size: 13px;
@@ -92,7 +91,6 @@
     100% { opacity: 0.7; }
 }
 
-/* ========== 响应式适配 ========== */
 @media (max-width: 640px) {
     .boot-logo {
         font-size: 56px;
@@ -102,7 +100,6 @@
     }
 }
 
-/* ========== 减少动画偏好支持（已禁用：见 config.js） ========== */
 /* @media (prefers-reduced-motion: reduce) {
     .boot-progress-bar {
         animation-duration: 0.01ms !important;

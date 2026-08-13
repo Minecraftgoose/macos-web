@@ -32,6 +32,11 @@
     transition: all 1.0s cubic-bezier(0.32, 0.72, 0, 1) !important;
 }
 
+/* 全屏窗口：彻底去圆角（窗口已占满屏幕，圆角无意义） */
+.window.is-fullscreen {
+    border-radius: 0;
+}
+
 /* 窗口获得焦点时的阴影效果 */
 .window.window-focused {
     box-shadow: 0 20px 60px rgba(0,0,0,0.25);
@@ -70,7 +75,6 @@
     pointer-events: none !important;
 }
 
-/* ========== Dock动画增强 ========== */
 .dock-item {
     transform-origin: center bottom;
     will-change: transform, opacity;
@@ -89,7 +93,6 @@
     animation: badgeAppear 0.8s cubic-bezier(0.32, 0.72, 0, 1) forwards;
 }
 
-/* ========== 桌面图标动画增强 ========== */
 .desktop-icon {
     will-change: transform, opacity, filter;
     transform-origin: center center;
@@ -99,7 +102,6 @@
     pointer-events: none;
 }
 
-/* ========== 菜单栏动画增强 ========== */
 .menu-bar {
     /* 确保菜单栏在动画期间稳定 */
     transform: translateZ(0);
@@ -112,7 +114,6 @@
     will-change: transform, opacity, filter;
 }
 
-/* ========== 控制中心动画增强 ========== */
 .control-center {
     /* 确保控制中心动画流畅 */
     transform: translateZ(0);
@@ -125,14 +126,12 @@
     transform-origin: center left;
 }
 
-/* ========== 右键菜单动画增强 ========== */
 .context-menu {
     /* 菜单动画优化 */
     transform-origin: top left;
     will-change: transform, opacity, filter;
 }
 
-/* ========== 遮罩层样式 ========== */
 #animation-overlay {
     position: fixed;
     top: 0;
@@ -151,7 +150,6 @@
     display: block;
 }
 
-/* ========== 减少动画偏好支持（已禁用：见 config.js window.MACOS_CONFIG.reducedMotion） ========== */
 /* body.reduce-motion .window,
 body.reduce-motion .dock-item,
 body.reduce-motion .desktop-icon,
@@ -171,7 +169,6 @@ body.reduce-motion .window-restoring {
     filter: none !important;
 } */
 
-/* ========== 性能优化类 ========== */
 .gpu-layer {
     transform: translateZ(0);
     backface-visibility: hidden;
@@ -183,7 +180,6 @@ body.reduce-motion .window-restoring {
     contain: layout style paint;
 }
 
-/* ========== 动画调试模式 ========== */
 body.debug-animations .window,
 body.debug-animations .dock-item,
 body.debug-animations .desktop-icon {
@@ -194,7 +190,6 @@ body.debug-animations .window-animating {
     outline: 2px solid rgba(0, 255, 0, 0.5);
 }
 
-/* ========== 响应式动画调整 ========== */
 @media (max-width: 768px) {
     .window {
         transition-duration: 0.8s;
@@ -214,7 +209,6 @@ body.debug-animations .window-animating {
     }
 }
 
-/* ========== 深色模式动画调整 ========== */
 body.dark-mode .window.window-focused {
     box-shadow: 0 20px 60px rgba(0,0,0,0.5);
 }
@@ -223,7 +217,6 @@ body.dark-mode .window.window-dragging {
     box-shadow: 0 25px 80px rgba(0,0,0,0.6);
 }
 
-/* ========== 开机动画增强 ========== */
 .boot-screen {
     z-index: 98000;
     pointer-events: auto;
@@ -250,7 +243,6 @@ body.dark-mode .window.window-dragging {
     will-change: width;
 }
 
-/* ========== Siri界面动画增强 ========== */
 .siri-interface {
     /* Siri界面动画优化 */
     will-change: transform, opacity, backdrop-filter;
@@ -261,12 +253,10 @@ body.dark-mode .window.window-dragging {
     will-change: transform;
 }
 
-/* ========== 滚动条动画 ========== */
 ::-webkit-scrollbar-thumb {
     transition: background-color 0.3s ease;
 }
 
-/* ========== 辅助功能增强（减弱动画已禁用，见 config.js） ========== */
 /* @media (prefers-reduced-motion: reduce) {
     *,
     *::before,

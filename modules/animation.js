@@ -1,8 +1,8 @@
-// ========== animation.js - 窗口与系统动画 ==========
+
 const AnimationManager = {
     // 动画配置
     config: {
-        // 缓动函数 - 全部改为平滑/减速，去掉 spring
+
         easing: {
             standard: 'cubic-bezier(0.4, 0.0, 0.2, 1)',
             decelerate: 'cubic-bezier(0.0, 0.0, 0.2, 1)',
@@ -11,16 +11,16 @@ const AnimationManager = {
             spring: 'cubic-bezier(0.25, 0.1, 0.25, 1.0)',   // 平滑，无弹跳
             smooth: 'cubic-bezier(0.25, 0.1, 0.25, 1.0)'
         },
-        // 持续时间（保持原样，可微调）
+
         duration: {
             instant: 100,
-            fast: 300,
-            normal: 600,
-            slow: 1000,
-            slower: 1200,
+            fast: 200,        // 窗口关闭/出场（苹果≈200ms）
+            normal: 350,      // 普通过渡（Mission Control/Exposé≈350ms）
+            slow: 500,        // 全屏切换≈500ms
+            slower: 350,      
             slowest: 1500,
             boot: 1500,
-            genie: 1200
+            genie: 700        // Genie 最小化/还原（苹果≈700ms，原1200偏长）
         },
         gpu: {
             transform: 'translateZ(0)',
@@ -181,15 +181,12 @@ const AnimationManager = {
         element.style.willChange = '';
     },
 
-    // ========== 窗口打开（平滑，无弹跳） ==========
-    async animateWindowOpen(windowElement) {
+async animateWindowOpen(windowElement) {
         if (!windowElement) return;
         const winId = windowElement.id || 'window-' + Date.now();
         if (this.state.windowStates.get(winId) === 'opening') return;
         this.state.windowStates.set(winId, 'opening');
 
-        const appName = windowElement.dataset.app;
-        const dockItem = appName ? document.querySelector(`.dock-item[data-app="${appName}"]`) : null;
         const dur = this.config.duration.slower;
         const ease = this.config.easing.decelerate;   // 减速进入，无弹跳
 
@@ -198,49 +195,25 @@ const AnimationManager = {
 
         this.showOverlay();
 
-        if (dockItem) {
-            const dr = dockItem.getBoundingClientRect();
-            const targetL = parseInt(windowElement.style.left) || 0;
-            const targetT = parseInt(windowElement.style.top) || 0;
-            const targetW = parseInt(windowElement.style.width) || 600;
-            const targetH = parseInt(windowElement.style.height) || 400;
-            const winCX = targetL + targetW / 2;
-            const winCY = targetT + targetH / 2;
-            const dockCX = dr.left + dr.width / 2;
-            const dockCY = dr.top + dr.height / 2;
-            const offX = dockCX - winCX;
-            const offY = dockCY - winCY;
+        // 标准 macOS 风格窗口打开：从自身位置居中淡入放大，
+        // 不再以 dock 项为起点“生长”，避免动态 app（dock 项在右侧）打开时从屏幕右侧飞入。
+        // （最小化→dock / 还原 的 genie 效果在 animateWindowMinimize / animateWindowRestore 中保留）
+        windowElement.style.transition = 'none';
+        windowElement.style.transform = 'scale(0.82) translateY(24px)';
+        windowElement.style.opacity = '0';
 
-            windowElement.style.transition = 'none';
-            windowElement.style.transform = `translate(${offX}px, ${offY}px) scale(0.05)`;
-            windowElement.style.opacity = '0';
-            void windowElement.offsetHeight;
+        windowElement.classList.remove('window-opening');
+        void windowElement.offsetHeight;
 
-            windowElement.style.transition = `transform ${dur}ms ${ease}, opacity ${dur}ms ${ease}`;
-            windowElement.style.willChange = 'transform, opacity';
+        windowElement.style.transition = `transform ${dur}ms ${ease}, opacity ${dur}ms ${ease}`;
+        windowElement.style.willChange = 'transform, opacity';
 
+        requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    windowElement.style.transform = 'translate(0, 0) scale(1)';
-                    windowElement.style.opacity = '1';
-                });
+                windowElement.style.transform = 'scale(1) translateY(0)';
+                windowElement.style.opacity = '1';
             });
-        } else {
-            windowElement.style.transition = 'none';
-            windowElement.style.transform = 'scale(0.85) translateY(60px)';
-            windowElement.style.opacity = '0';
-            void windowElement.offsetHeight;
-
-            windowElement.style.transition = `transform ${dur}ms ${ease}, opacity ${dur}ms ${ease}`;
-            windowElement.style.willChange = 'transform, opacity';
-
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    windowElement.style.transform = 'scale(1) translateY(0)';
-                    windowElement.style.opacity = '1';
-                });
-            });
-        }
+        });
 
         await new Promise(r => setTimeout(r, dur + 50));
 
@@ -256,8 +229,7 @@ const AnimationManager = {
         this.notifyWindowResize(windowElement);
     },
 
-    // ========== 窗口关闭（平滑加速，无弹跳） ==========
-    async animateWindowClose(windowElement) {
+async animateWindowClose(windowElement) {
         if (!windowElement) return;
         const winId = windowElement.id || 'unknown';
         this.state.windowStates.set(winId, 'closing');
@@ -297,8 +269,7 @@ const AnimationManager = {
         this.state.windowStates.delete(winId);
     },
 
-    // ========== 最小化（平滑缩放+位移，无弹跳） ==========
-    async animateWindowMinimize(windowElement, dockRect, windowRect) {
+async animateWindowMinimize(windowElement, dockRect, windowRect) {
         if (!windowElement) return;
         const winId = windowElement.id || 'unknown';
         this.state.windowStates.set(winId, 'minimizing');
@@ -366,8 +337,7 @@ const AnimationManager = {
         this.state.windowStates.set(winId, 'minimized');
     },
 
-    // ========== 恢复（平滑放大+位移，无弹跳） ==========
-    async animateWindowRestore(windowElement, dockRect, originalRect) {
+async animateWindowRestore(windowElement, dockRect, originalRect) {
         if (!windowElement || !originalRect) return;
         const winId = windowElement.id || 'unknown';
         this.state.windowStates.set(winId, 'restoring');
@@ -442,8 +412,7 @@ const AnimationManager = {
         this.notifyWindowResize(windowElement);
     },
 
-    // ========== 全屏切换（平滑，无弹跳） ==========
-    async animateWindowFullscreen(windowElement, isFullscreen, targetRect) {
+async animateWindowFullscreen(windowElement, isFullscreen, targetRect) {
         if (!windowElement || !targetRect) return;
         const winId = windowElement.id || 'unknown';
         this.state.windowStates.set(winId, isFullscreen ? 'fullscreening' : 'exiting-fullscreen');
@@ -477,18 +446,16 @@ const AnimationManager = {
         this.notifyWindowResize(windowElement);
     },
 
-    // ========== 窗口聚焦（平滑阴影过渡，无弹跳） ==========
-    async animateWindowFocus(windowElement) {
+async animateWindowFocus(windowElement) {
         if (!windowElement) return;
         windowElement.classList.remove('anim-window-focus');
         await this.nextFrame();
         await this.applyAnimation(windowElement, 'anim-window-focus', this.config.duration.slowest);
     },
 
-    // ========== Dock 弹跳（改为平滑缩放，无弹跳） ==========
-    async animateDockBounce(dockItem) {
+async animateDockBounce(dockItem) {
         if (!dockItem) return;
-        // 改为平滑放大再缩回（无弹跳）
+
         dockItem.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1.0)';
         dockItem.style.transform = 'scale(1.15)';
         await new Promise(r => setTimeout(r, 300));

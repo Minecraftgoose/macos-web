@@ -1,4 +1,4 @@
-// ========== launchpad.js - 全屏应用网格（Launchpad） ==========
+
 (function() {
     const overlay = document.getElementById('launchpad-overlay');
     const searchInput = document.getElementById('launchpad-search');
@@ -9,8 +9,7 @@
     let appList = [];
     let isOpen = false;
 
-    // 收集应用列表：桌面图标(图标优先) + Dock固定项(补缺) + appConfig(兜底)
-    function collectApps() {
+function collectApps() {
         const map = new Map();
         const push = (app, title, iconSrc, iconClass, iconColor) => {
             if (!map.has(app)) {
@@ -43,8 +42,7 @@
                 i ? (i.style.color || '#8e8e93') : '#8e8e93');
         });
 
-        // 3. appConfig 兜底（未出现在 DOM 的应用）
-        const cfg = window.appConfig || {};
+const cfg = window.appConfig || {};
         Object.keys(cfg).forEach(app => {
             if (app === 'trash') return;
             const c = cfg[app];

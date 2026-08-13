@@ -1,6 +1,5 @@
-// ========== onboarding.js - 首次引导注册 / 登录界面（模拟） ==========
-// 依赖顺序：无依赖，需在 main.js 之前加载（main.js 调用 window.Onboarding）
-// 说明：纯前端模拟，账户信息存 localStorage，无后端、无真实鉴权。
+
+
 (function () {
     'use strict';
 
@@ -37,8 +36,7 @@
         setTimeout(() => overlay.remove(), 480);
     }
 
-    // ========== 引导注册（首次开机后调用） ==========
-    function runOnboarding() {
+function runOnboarding() {
         return new Promise((resolve) => {
             const dots = AVATAR_COLORS.map((c) =>
                 `<button type="button" class="avatar-dot" data-color="${c}" style="background:${c}"></button>`
@@ -102,43 +100,25 @@
         });
     }
 
-    // ========== 登录（非首次打开调用） ==========
-    function runLogin(account) {
+function runLogin(account) {
         return new Promise((resolve) => {
             const initial = (account.username || '?').charAt(0).toUpperCase();
             const overlay = createOverlay(`
                 <div class="auth-card">
                     <div class="auth-avatar" style="background:${account.avatarColor}">${initial}</div>
                     <h1 class="auth-title">${account.username}</h1>
-                    <p class="auth-sub">输入密码以登录</p>
-                    <div class="auth-field">
-                        <input id="login-password" type="password" placeholder="密码" autocomplete="off" />
-                    </div>
-                    <div class="auth-error" id="login-error"></div>
+                    <p class="auth-sub">点击登录以继续使用</p>
                     <button class="auth-btn" id="login-submit">登录</button>
-                    <button class="auth-link" id="login-switch">切换用户 / 重新注册</button>
                 </div>
             `);
 
             const submit = () => {
-                const pwd = overlay.querySelector('#login-password').value;
-                const err = overlay.querySelector('#login-error');
-                if (!pwd) { err.textContent = '请输入密码'; return; }
-                if (pwd !== account.password) { err.textContent = '密码错误'; return; }
                 removeOverlay(overlay);
                 resolve(account);
             };
 
             overlay.querySelector('#login-submit').addEventListener('click', submit);
-            overlay.querySelector('#login-password').addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') submit();
-            });
-            overlay.querySelector('#login-switch').addEventListener('click', () => {
-                removeOverlay(overlay);
-                clearAccount();
-                runOnboarding().then(resolve);
-            });
-            setTimeout(() => overlay.querySelector('#login-password').focus(), 120);
+            setTimeout(() => overlay.querySelector('#login-submit').focus(), 120);
         });
     }
 

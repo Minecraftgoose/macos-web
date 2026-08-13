@@ -1,0 +1,44 @@
+
+/* 引用路径相对于本文件（css/fonts.css），故实际字体在 css/fonts/ 目录 */
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 100;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Ultralight.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 200;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Thin.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Light.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Regular.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Medium.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'PingFang SC';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('./fonts/PingFangSC-Semibold.woff2') format('woff2');
+}

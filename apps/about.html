@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/fonts.css">
     <title>关于本机</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -54,7 +55,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg-body);
             height: 100vh;
             overflow: hidden;
@@ -81,7 +82,7 @@
 
         .sidebar-item {
             padding: 12px 20px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             font-size: 13px;
             color: var(--text-primary);
             border-left: 3px solid transparent;
@@ -265,7 +266,7 @@
             right: 20px;
             color: white;
             font-size: 24px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             width: 40px;
             height: 40px;
             display: flex;
@@ -328,7 +329,7 @@
             padding: 16px 20px;
             box-shadow: var(--timeline-shadow);
             border: var(--timeline-border);
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             user-select: none;
         }
 
@@ -395,7 +396,7 @@
             transform: none;
             background: var(--timeline-bg);
             box-shadow: var(--timeline-shadow);
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
         }
 
         @media (max-width: 640px) {
@@ -457,6 +458,14 @@ input, textarea, [contenteditable="true"] { cursor: text; }
                         <div class="dev-info">
                             <h3>Minecraft_goose</h3>
                             <p>主开发者</p>
+                        </div>
+                    </div>
+
+                    <div class="dev-card">
+                        <img src="./headphoto/shenyujie.webp" class="dev-avatar" alt="沈裕杰">
+                        <div class="dev-info">
+                            <h3>沈裕杰</h3>
+                            <p>地图开发者</p>
                         </div>
                     </div>
 
@@ -523,7 +532,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
             <!-- 更新历史 - 默认折叠，点击展开 -->
             <div class="content-section" id="history">
                     <div class="timeline">
-                    <!-- ===== v1.0.25（今天） ===== -->
+                    
                     <div class="timeline-item">
                         <div class="timeline-header">
                             <span class="timeline-date">2026/8/9</span>
@@ -540,8 +549,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
                         </div>
                     </div>
 
-                    <!-- ===== v1.0.24（今天） ===== -->
-                    <div class="timeline-item">
+<div class="timeline-item">
                         <div class="timeline-header">
                             <span class="timeline-date">2026/8/8</span>
                             <span class="timeline-version">v1.0.24 <i class="fas fa-chevron-down toggle-icon"></i></span>
@@ -566,8 +574,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
                         </div>
                     </div>
 
-                    <!-- ===== 新增 v1.0.2（今天） ===== -->
-                    <div class="timeline-item">
+<div class="timeline-item">
                         <div class="timeline-header">
                             <span class="timeline-date">2026/7/11</span>
                             <span class="timeline-version">v1.0.2 <i class="fas fa-chevron-down toggle-icon"></i></span>
@@ -585,8 +592,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
                         </div>
                     </div>
 
-                    <!-- ===== 新增 v1.0.14（忘了） ===== -->
-                    <div class="timeline-item">
+<div class="timeline-item">
                         <div class="timeline-header">
                             <span class="timeline-date">忘了</span>
                             <span class="timeline-version">v1.0.14 <i class="fas fa-chevron-down toggle-icon"></i></span>
@@ -598,8 +604,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
                         </div>
                     </div>
 
-                    <!-- ===== 原有 v1.0.1 ===== -->
-                    <div class="timeline-item">
+<div class="timeline-item">
                         <div class="timeline-header">
                             <span class="timeline-date">2026/5/5</span>
                             <span class="timeline-version">v1.0.1 <i class="fas fa-chevron-down toggle-icon"></i></span>

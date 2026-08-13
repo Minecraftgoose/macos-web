@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- 核心样式文件 -->
+    <link rel="stylesheet" href="./css/fonts.css">
     <link rel="stylesheet" href="./css/base.css">
     <link rel="stylesheet" href="./css/boot.css">
     <link rel="stylesheet" href="./css/siri.css">
@@ -36,7 +37,7 @@
     <base target="_blank">
 </head>
 <body>
-    <!-- 开机动画层（已改为苹果 Logo + 进度条） -->
+    
     <div id="boot-screen" class="boot-screen">
         <div class="boot-content">
             <!-- 苹果 Logo（使用 Font Awesome 图标） -->
@@ -47,7 +48,7 @@
             <div class="boot-progress-container">
                 <div class="boot-progress-bar"></div>
             </div>
-            <!-- 提示文字 -->
+            
             <div class="boot-hint">正在启动 macOS...</div>
         </div>
     </div>
@@ -112,6 +113,13 @@
                     <i class="fas fa-star-of-life" style="display: none; font-size: 50px; color: #30d158;"></i>
                 </div>
                 <span>天气</span>
+            </div>
+            <div class="desktop-icon" draggable="true" data-type="app" data-name="地图" data-app="map">
+                <div class="icon-container">
+                    <img src="./webp/map.webp" alt="地图" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <i class="fas fa-map-marked-alt" style="display: none; font-size: 50px; color: #34c759;"></i>
+                </div>
+                <span>地图</span>
             </div>
             <div class="desktop-icon" draggable="true" data-type="app" data-name="照片" data-app="photos">
                 <div class="icon-container">
@@ -237,6 +245,15 @@
                 <div class="dock-indicator"></div>
             </div>
 
+            <div class="dock-item dock-item-fixed" data-app="map" title="地图">
+                <div class="dock-icon">
+                    <img src="./webp/map.webp" alt="地图" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <i class="fas fa-map-marked-alt" style="display: none; font-size: 28px; color: #34c759;"></i>
+                </div>
+                <div class="dock-label">地图</div>
+                <div class="dock-indicator"></div>
+            </div>
+
             <div class="dock-item dock-item-fixed" data-app="settings" title="系统偏好设置">
                 <div class="dock-icon">
                     <img src="./webp/settings.webp" alt="设置" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -246,17 +263,6 @@
                 <div class="dock-indicator"></div>
             </div>
 
-            <!-- 分隔线 -->
-            <div class="dock-divider"></div>
-
-            <!-- 废纸篓 -->
-            <div class="dock-item dock-item-fixed" data-app="trash" title="废纸篓">
-                <div class="dock-icon">
-                    <img src="./webp/trash.webp" alt="废纸篓" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <i class="fas fa-trash-alt" style="display: none; font-size: 28px; color: #8e8e93;"></i>
-                </div>
-                <div class="dock-label">废纸篓</div>
-            </div>
         </div>
 
         <!-- 动态 Dock  -->
@@ -311,6 +317,7 @@
     <script src="./modules/control-center.js"></script>
     <script src="./modules/animation.js"></script>
     <script src="./modules/dock.js"></script>
+    <script src="./modules/calendar-icon.js"></script>
     <script src="./modules/spotlight.js"></script>
     <script src="./modules/launchpad.js"></script>
     <script src="./modules/dynamic-island.js"></script>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="../css/fonts.css">
     <title>系统设置</title>
     <style>
         * {
@@ -46,7 +47,7 @@
         }
 
         body {
-            font-family: -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            font-family: 'PingFang SC', -apple-system, 'SF Pro Text', 'Helvetica Neue', sans-serif;
             background: transparent;
             display: block;
             overflow: hidden;
@@ -93,7 +94,7 @@
             padding: 10px 14px;
             margin: 0 6px;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             display: flex;
             align-items: center;
             gap: 14px;
@@ -209,7 +210,7 @@
         }
         .slider {
             position: absolute;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             top: 0;
             left: 0;
             right: 0;
@@ -303,7 +304,7 @@
             background: #007aff;
             color: #fff;
             font-size: 13px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: background 0.2s ease;
         }
         #wallpaperReset:hover { background: #0a84ff; }
@@ -323,7 +324,7 @@
             border-radius: 10px;
             background-size: cover;
             background-position: center;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             border: 2px solid transparent;
             transition: border-color 0.2s ease, transform 0.15s ease;
             overflow: hidden;
@@ -505,8 +506,7 @@ input, textarea, [contenteditable="true"] { cursor: text; }
 <script>
     function $(id) { return document.getElementById(id); }
 
-    // ========== 偏好读写：与父窗口共享同一份 localStorage（同源 iframe） ==========
-    const PREFS_KEY = 'macos_prefs';
+const PREFS_KEY = 'macos_prefs';
     function readPrefs() {
         try { return JSON.parse(localStorage.getItem(PREFS_KEY)) || {}; }
         catch(e) { return {}; }
@@ -579,14 +579,12 @@ input, textarea, [contenteditable="true"] { cursor: text; }
         if (e.key === 'macos_screentime_minutes') renderScreenTime();
     });
 
-    // ========== 桌面墙纸：上传 / 预览 / 恢复默认 ==========
-    const WALL_KEY = 'macos_wallpaper';
+const WALL_KEY = 'macos_wallpaper';
     const wallInput = $('wallpaperInput');
     const wallPreview = $('wallpaperPreview');
     const wallError = $('wallpaperError');
 
-    // ========== 内置壁纸库 ==========
-    const BUILTIN_WALLPAPERS = [
+const BUILTIN_WALLPAPERS = [
         { file: 'webp/wallpaper-lake.webp',        name: '湖边小屋' },
         { file: 'webp/wallpaper-lake-4.webp',      name: '湖畔' },
         { file: 'webp/wallpaper-iridescence.webp', name: '虹彩' },

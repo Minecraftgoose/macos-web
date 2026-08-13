@@ -1,4 +1,4 @@
-/* ========== 开机引导 / 登录 浮层（模拟） ========== */
+
 .auth-overlay {
     position: fixed;
     inset: 0;
@@ -62,7 +62,7 @@
     height: 26px;
     border-radius: 50%;
     border: 2px solid transparent;
-    cursor: pointer;
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
     padding: 0;
     transition: transform 0.2s ease, border-color 0.2s ease;
 }
@@ -125,7 +125,7 @@
     color: #fff;
     font-size: 15px;
     font-weight: 600;
-    cursor: pointer;
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
     transition: background 0.2s ease;
 }
 
@@ -138,7 +138,7 @@
     border: none;
     color: rgba(255, 255, 255, 0.6);
     font-size: 12px;
-    cursor: pointer;
+    cursor: url('../webp/cursor-normal.png') 4 4, default;
     text-decoration: underline;
     padding: 4px;
 }

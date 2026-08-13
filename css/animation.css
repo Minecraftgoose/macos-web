@@ -17,7 +17,6 @@
     --gpu-accelerated: translateZ(0);
 }
 
-/* ===== 开机动画（平滑） ===== */
 @keyframes bootFadeIn {
     0% { opacity: 0; transform: scale(0.96) translateY(10px); filter: blur(2px); }
     100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
@@ -31,7 +30,6 @@
     100% { background-position: 200% 0; }
 }
 
-/* ===== 菜单栏 ===== */
 @keyframes menuBarSlideDown {
     0% { opacity: 0; transform: translateY(-100%); }
     100% { opacity: 1; transform: translateY(0); }
@@ -41,7 +39,6 @@
     100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
 
-/* ===== Dock（平滑出现，无弹跳） ===== */
 @keyframes dockSlideUp {
     0% { opacity: 0; transform: translateY(100%) scaleY(0.9); }
     100% { opacity: 1; transform: translateY(0) scaleY(1); }
@@ -50,7 +47,7 @@
     0% { opacity: 0; transform: scale(0.7) translateY(20px); filter: blur(6px); }
     100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
-/* Dock 弹跳改为平滑缩放 */
+
 @keyframes dockBounce {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.12); }
@@ -60,7 +57,6 @@
     100% { opacity: 1; transform: scale(1); }
 }
 
-/* ===== 窗口动画（全部平滑，无弹跳） ===== */
 @keyframes windowOpen {
     0% { opacity: 0; transform: scale(0.88) translateY(40px); filter: blur(12px); }
     100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
@@ -91,7 +87,6 @@
     50% { box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
 }
 
-/* ===== 桌面图标 ===== */
 @keyframes iconFadeInStagger {
     0% { opacity: 0; transform: translateY(20px) scale(0.9); filter: blur(4px); }
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -102,13 +97,11 @@
     100% { transform: scale(1); }
 }
 
-/* ===== 右键菜单 ===== */
 @keyframes contextMenuAppear {
     0% { opacity: 0; transform: scale(0.92) translateY(-10px); filter: blur(8px); }
     100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
 }
 
-/* ===== 控制中心 ===== */
 @keyframes controlCenterSlide {
     0% { opacity: 0; transform: translateY(-20px) scale(0.95); filter: blur(12px); }
     100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
@@ -118,7 +111,6 @@
     100% { opacity: 1; transform: translateX(0) scale(1); }
 }
 
-/* ===== Siri ===== */
 @keyframes siriOrbPulse {
     0%, 100% { transform: scale(1); opacity: 0.8; }
     50% { transform: scale(1.08); opacity: 1; }
@@ -128,7 +120,6 @@
     100% { opacity: 1; transform: scale(1) translateY(0); backdrop-filter: blur(20px); }
 }
 
-/* ===== 拖拽/调整大小 ===== */
 @keyframes dragLift {
     0% { transform: scale(1); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     100% { transform: scale(1.02); box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
@@ -138,7 +129,6 @@
     50% { opacity: 1; }
 }
 
-/* ===== 动画类应用 ===== */
 .anim-boot-fade-in { animation: bootFadeIn 1.5s var(--macos-ease-decelerate) forwards; }
 .anim-logo-pulse { animation: logoPulse 2s ease-in-out infinite; }
 .anim-menu-bar-slide { animation: menuBarSlideDown 1.0s var(--macos-ease-decelerate) forwards; }
@@ -165,7 +155,6 @@
 .anim-siri-reveal { animation: siriInterfaceReveal 1.2s var(--macos-ease-smooth) forwards; }
 .anim-drag-lift { animation: dragLift 0.6s var(--macos-ease-smooth) forwards; }
 
-/* ===== 过渡类 ===== */
 .transition-stable {
     transition: all 1.2s var(--macos-ease-smooth);
     will-change: transform, opacity;
@@ -194,7 +183,6 @@
     will-change: opacity, transform;
 }
 
-/* ===== 状态类 ===== */
 .window-animating { pointer-events: none !important; user-select: none !important; }
 .window-animating iframe { pointer-events: none !important; }
 .window-dragging { cursor: grabbing !important; transition: none !important; will-change: left, top; z-index: 99999 !important; }
@@ -203,13 +191,11 @@
 .window-restoring { pointer-events: none; transition: all 1.2s var(--macos-ease-decelerate); transform-origin: center bottom; }
 .window-stable { transition: box-shadow 0.3s var(--macos-ease-smooth); }
 
-/* ===== GPU 加速 ===== */
 .gpu-accelerated { transform: translateZ(0); backface-visibility: hidden; perspective: 1000px; }
 .contain-layout { contain: layout style paint; }
 .will-change-transform { will-change: transform; }
 .will-change-opacity { will-change: opacity; }
 
-/* ===== 减少动画偏好（已禁用：见 config.js） ===== */
 /* @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
         animation-duration: 0.01ms !important;

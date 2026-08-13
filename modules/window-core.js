@@ -1,4 +1,4 @@
-// ========== 窗口核心操作（无需修改，保持原样） ==========
+
 let windows = [];
 window.windows = windows;
 let nextWindowId = 1;
@@ -39,8 +39,11 @@ async function closeWindow(winObj) {
     }
     dom.remove();
     windows = windows.filter(w => w.id !== winObj.id);
+    window.windows = windows;   // 同步全局引用，避免全屏计数等逻辑读到已关闭窗口
+    // 关闭的若是全屏窗口，重新同步 Dock 显隐（退出全屏后 Dock 应恢复）
+    if (winObj.isFullscreen && window.applyPrefs) window.applyPrefs();
     updateBadge(winObj.app);
-    // 该应用若已无任何窗口，从"上次打开"记录中移除（否则下次启动会自动重开已关闭的应用）
+
     try {
         const stillOpen = windows.some(w => w.app === winObj.app);
         if (!stillOpen) {
@@ -75,6 +78,8 @@ async function minimizeWindow(winObj) {
         winObj.minimized = true;
         winObj.isMinimizing = false;
         updateBadge(winObj.app);
+        // 全屏窗口最小化后，Dock 应回归（applyPrefs 已排除已最小化窗口）
+        if (window.applyPrefs) window.applyPrefs();
         return;
     }
     const dockRect = dockItem.getBoundingClientRect();
@@ -95,6 +100,8 @@ async function minimizeWindow(winObj) {
     winObj.minimized = true;
     winObj.isMinimizing = false;
     updateBadge(winObj.app);
+    // 全屏窗口最小化后，Dock 应回归（applyPrefs 已排除已最小化窗口）
+    if (window.applyPrefs) window.applyPrefs();
     if (activeWindow === winObj) {
         const nextWindow = windows.find(w => !w.minimized && w.id !== winObj.id);
         if (nextWindow) focusWindow(nextWindow);
@@ -115,11 +122,10 @@ async function restoreWindow(winObj) {
         };
         winObj.originalRect = orig;
     }
-    // 全屏状态下被最小化：恢复时回到全屏尺寸（保持 isFullscreen 状态一致）
+    // 全屏状态下被最小化：恢复时回到全屏尺寸（全屏时 Dock 已隐藏，直接占满底部）
     if (winObj.isFullscreen) {
         const menuH = getMenuBarHeight();
-        const dockH = document.body.classList.contains('dock-auto-hide') ? 0 : getDockHeight();
-        orig = { left: 0, top: menuH, width: window.innerWidth, height: window.innerHeight - menuH - dockH };
+        orig = { left: 0, top: menuH, width: window.innerWidth, height: window.innerHeight - menuH };
     }
     const dockItem = document.querySelector(`.dock-item[data-app="${winObj.app}"]`);
     if (!dockItem) {
@@ -153,6 +159,8 @@ async function restoreWindow(winObj) {
     winObj.minimized = false;
     winObj.isRestoring = false;
     updateBadge(winObj.app);
+    // 恢复后同步 Dock：若恢复的是全屏窗口（未最小化），Dock 应再次隐藏
+    if (window.applyPrefs) window.applyPrefs();
     notifyResize(winObj);
     focusWindow(winObj);
 }
@@ -160,8 +168,8 @@ async function restoreWindow(winObj) {
 async function toggleFullscreen(winObj) {
     const win = winObj.dom;
     const menuH = getMenuBarHeight();
-    // 自动隐藏 Dock 时 Dock 已移出屏幕，全屏应占满到底部（不留空）
-    const dockH = document.body.classList.contains('dock-auto-hide') ? 0 : getDockHeight();
+    // 全屏时 Dock 已隐藏（由 applyPrefs 统一控制），无需再计算 Dock 高度，直接占满到底部
+    const dockH = 0;
     if (winObj.isFullscreenTransitioning) return;
     winObj.isFullscreenTransitioning = true;
     if (!winObj.isFullscreen) {
@@ -183,6 +191,7 @@ async function toggleFullscreen(winObj) {
             await new Promise(r => setTimeout(r, 1000));
         }
         winObj.isFullscreen = true;
+        win.classList.add('is-fullscreen');   // 全屏：去圆角
     } else {
         const o = winObj.originalRect;
         if (window.AnimationManager) {
@@ -196,7 +205,10 @@ async function toggleFullscreen(winObj) {
             await new Promise(r => setTimeout(r, 1000));
         }
         winObj.isFullscreen = false;
+        win.classList.remove('is-fullscreen');   // 退出全屏：恢复圆角
     }
+    // 全屏状态变化后同步 Dock 显隐（进入全屏隐藏，退出恢复），复用设置里的隐藏逻辑
+    if (window.applyPrefs) window.applyPrefs();
     win.style.transition = '';
     winObj.isFullscreenTransitioning = false;
     notifyResize(winObj);
@@ -275,6 +287,7 @@ async function createWindow(appName, left, top, width, height) {
         resizeState.startHeight = winDiv.offsetHeight;
         resizeState.startLeft = parseInt(winDiv.style.left) || 0;
         resizeState.startTop = parseInt(winDiv.style.top) || 0;
+        winDiv.classList.add('resizing-' + dir);
         focusWindow(winObj);
         if (window.AnimationManager) window.AnimationManager.animateResizeStart(winDiv);
         else winDiv.classList.add('window-resizing');

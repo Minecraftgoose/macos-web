@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/fonts.css">
     <title>日历</title>
     <style>
         * {
@@ -11,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'PingFang SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: rgba(245, 245, 247, 0.95);
             height: 100vh;
             display: flex;
@@ -59,7 +60,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             color: white;
             font-size: 18px;
             transition: 0.2s;
@@ -100,7 +101,7 @@
             justify-content: center;
             font-size: clamp(12px, 4vw, 16px);
             border-radius: 12px;
-            cursor: pointer;
+            cursor: url('../webp/cursor-normal.png') 4 4, default;
             transition: 0.15s;
             position: relative;
             background: rgba(255,255,255,0.6);

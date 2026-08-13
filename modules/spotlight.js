@@ -1,4 +1,4 @@
-// ========== spotlight.js - 顶部菜单栏放大镜 → Spotlight 搜索 ==========
+
 (function() {
     const trigger = document.getElementById('spotlight-trigger');
     const overlay = document.getElementById('spotlight-overlay');
@@ -48,7 +48,7 @@
         if (!q) {
             filtered = appList.slice();
         } else {
-            // 简单子串匹配 + 拼音首字母兜底（不做完整拼音库，仅英文/标题/应用名）
+
             filtered = appList.filter(app => {
                 const hay = (app.title + ' ' + app.app).toLowerCase();
                 return hay.includes(q);

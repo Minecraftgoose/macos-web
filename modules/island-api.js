@@ -1,4 +1,4 @@
-/* ========== IslandAPI ========== */
+
 
 (function() {
     'use strict';
@@ -10,13 +10,7 @@
             }
         },
 
-        /**
-         * 临时通知
-         * @param {Object} opts
-         *   - cardSize: 'small' 或 'large'，默认 small
-         *   - icon, iconColor, title, subtitle, duration
-         */
-        notify(opts = {}) {
+notify(opts = {}) {
             const finalOpts = { cardSize: 'small', ...opts };
             this._send('notify', finalOpts);
         },
