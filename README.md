@@ -1,6 +1,10 @@
 # macOS 网页版
 
 <p align="center">
+  <img src="apps/headphoto/goose.webp" width="120" alt="Minecraft_goose" style="border-radius: 24px;">
+</p>
+
+<p align="center">
   <strong>把 Mac 搬进浏览器 —— 用纯前端技术复刻 macOS 桌面体验的网页版操作系统。</strong>
 </p>
 
