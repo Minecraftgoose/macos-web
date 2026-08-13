@@ -1,7 +1,7 @@
 # macOS 网页版
 
 <p align="center">
-  <img src="apps/headphoto/goose.webp" width="120" alt="Minecraft_goose" style="border-radius: 24px;">
+  <img src="icons/apple-touch-icon.png" width="120" alt="macOS 网页版">
 </p>
 
 <p align="center">
