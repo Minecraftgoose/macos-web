@@ -46,7 +46,6 @@
 - [内置应用](#内置应用)
 - [技术栈](#技术栈)
 - [本地运行](#本地运行)
-- [部署到 Cloudflare Pages](#部署到-cloudflare-pages)
 - [声明](#声明)
 - [许可证](#许可证)
 - [链接](#链接)
@@ -85,26 +84,22 @@
 | 照片 Photos | 图库 |
 | 终端 Terminal | 命令行 |
 | 关于本机 About | 系统信息 / 更新历史 |
-| 应用商店 App Store | 纯网址模式 |
-| 天气 Weather | 地区不可用占位页 |
+| 应用商店 App Store | 应用来自[macOSwebapp开发者平台](https://dev.macos.goose.cc.cd) |
+| 天气 Weather | 暂未开放 |
 | 灵动岛 Quest | 灵动岛 API 演示 |
 | 界合AI | / |
 | 便签 text | / |
-| 有道 yd | 翻译入口 |
+| 有道 yd | 翻译 |
 
 ## 技术栈
 
-<p>
-  纯静态前端：<strong>HTML5 + CSS3 + 原生 JavaScript</strong>。无构建步骤、无后端依赖，直接托管即可运行。
-</p>
+纯静态前端：<strong>HTML5 + CSS3 + 原生 JavaScript</strong>。无构建步骤、无后端依赖，直接托管即可运行。
 
-<p>
-  毛玻璃效果基于 <code>backdrop-filter</code>，对话框 / 控制中心 / 窗口均为自建组件。
-</p>
+毛玻璃效果基于 <code>backdrop-filter</code>，对话框 / 控制中心 / 窗口均为自建组件。
 
 ## 本地运行
 
-<p>本项目是纯静态站点，任意静态服务器都能跑：</p>
+本项目是纯静态站点，任意静态服务器都能跑：
 
 ```bash
 # 方式一：Python（无需安装依赖）
@@ -118,19 +113,6 @@ npx serve .
 
 <p>
   <sub>直接双击 <code>index.html</code> 用 <code>file://</code> 打开也能看大部分界面，但部分 iframe 应用建议用本地服务器以获得完整体验。</sub>
-</p>
-
-## 部署到 Cloudflare Pages
-
-<p>本项目已部署在 Cloudflare Pages（<code>macos</code> 项目，生产分支 <code>main</code>）：</p>
-
-```bash
-# 安装 wrangler 后，在项目根目录执行
-wrangler pages deploy . --project-name macos --branch main
-```
-
-<p>
-  <sub>注意：Cloudflare Pages 的自定义域名只跟随 <strong>Production</strong> 部署。若本地 git 分支不是 <code>main</code>，务必加 <code>--branch main</code>，否则只生成 Preview 部署、线上不会更新。</sub>
 </p>
 
 ## 声明
