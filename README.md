@@ -115,6 +115,22 @@ npx serve .
   <sub>直接双击 <code>index.html</code> 用 <code>file://</code> 打开也能看大部分界面，但部分 iframe 应用建议用本地服务器以获得完整体验。</sub>
 </p>
 
+## 赞助支持
+
+<p>
+  如果你觉得这个项目有趣，可以微信扫一扫下方赞赏码，支持作者继续更新：
+</p>
+
+<p align="center">
+  <img src="docs/donate.png" width="180" alt="微信赞赏码">
+</p>
+
+<p>
+  <sub>赞赏全凭自愿，感谢每一份支持。</sub>
+</p>
+
+---
+
 ## 声明
 
 1. 本项目与 [Apple Inc.](https://www.apple.com) 无任何关系
