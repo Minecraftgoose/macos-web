@@ -2,8 +2,11 @@
 # 在仓库右侧显示 Sponsor 按钮，支持以下平台，填一个或多个都行
 # 不需要的平台直接删掉或保持注释即可
 
+# 目前赞助方式只有微信，收款码还没生成，先全部注释掉
+# 等拿到微信赞赏码后，取消 custom 那几行的注释填上链接即可
+
 # GitHub Sponsors：填你的 GitHub 用户名（需先在 github.com/sponsors 开通）
-github: Minecraftgoose
+# github: Minecraftgoose
 
 # Patreon
 # patreon:
@@ -29,7 +32,8 @@ github: Minecraftgoose
 # Buy Me a Coffee
 # buy_me_a_coffee:
 
-# 自定义赞助链接（数组形式，如爱发电 / 支付宝 / 微信赞赏码页面等）
+# 自定义赞助链接（数组形式）
+# 微信赞赏码做法：微信【我】→【服务】→【收付款】→【赞赏码】生成图片，
+# 把图片上传到仓库（如 docs/wechat-reward.png），再用 raw 链接指向它
 # custom:
-#   - https://afdian.com/a/your-id
-#   - https://example.com/sponsor
+#   - https://raw.githubusercontent.com/Minecraftgoose/macos-web/main/docs/wechat-reward.png
