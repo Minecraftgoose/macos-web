@@ -32,6 +32,6 @@
 # Buy Me a Coffee
 # buy_me_a_coffee:
 
-# 自定义赞助链接（内联数组，最多 4 个；URL 含 : 需用双引号包裹）
+# 自定义赞助链接（单字符串；URL 含 : 需用双引号包裹）
 # 微信赞赏码图片：docs/donate.png
-custom: ["https://raw.githubusercontent.com/Minecraftgoose/macos-web/main/docs/donate.png"]
+custom: "https://raw.githubusercontent.com/Minecraftgoose/macos-web/main/docs/donate.png"
