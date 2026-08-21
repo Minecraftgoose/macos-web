@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://macos.goose.cc.cd"><img src="https://img.shields.io/badge/Online%20Demo-macos.goose.cc.cd-0071e3?style=for-the-badge" alt="在线体验"></a>
+  <a href="https://macos.goose.gs.cn"><img src="https://img.shields.io/badge/Online%20Demo-macos.goose.gs.cn-0071e3?style=for-the-badge" alt="在线体验"></a>
   <a href="https://minecraftgoose.github.io/macos-web"><img src="https://img.shields.io/badge/GitHub%20Pages-Live-34c759?style=for-the-badge" alt="GitHub Pages"></a>
   <a href="https://github.com/Minecraftgoose/macos-web/releases"><img src="https://img.shields.io/badge/Release-GitHub-6e5494?style=for-the-badge" alt="Release"></a>
 </p>
@@ -84,7 +84,7 @@
 | 照片 Photos | 图库 |
 | 终端 Terminal | 命令行 |
 | 关于本机 About | 系统信息 / 更新历史 |
-| 应用商店 App Store | 应用来自[macOSwebapp开发者平台](https://dev.macos.goose.cc.cd) |
+| 应用商店 App Store | 应用来自[macOSwebapp开发者平台](https://dev.macos.goose.gs.cn) |
 | 天气 Weather | 暂未开放 |
 | 灵动岛 Quest | 灵动岛 API 演示 |
 | 界合AI | / |
@@ -163,5 +163,5 @@ limitations under the License.
 ## 链接
 
 - 仓库地址：<https://github.com/Minecraftgoose/macos-web>
-- 项目网址：<https://minecraftgoose.github.io/macos-web> 或 <https://macos.goose.cc.cd>
+- 项目网址：<https://minecraftgoose.github.io/macos-web> 或 <https://macos.goose.gs.cn>
 - 问题反馈：<https://github.com/Minecraftgoose/macos-web/issues>
